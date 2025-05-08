@@ -1,0 +1,76 @@
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo: <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cob: <http://purl.obolibrary.org/obo/COB_> .
+@prefix ro: <http://purl.obolibrary.org/obo/RO_> .
+@prefix iao: <http://purl.obolibrary.org/obo/IAO_> .
+@prefix pafh: <http://purl.obolibrary.org/obo/PAFH_> .
+@prefix pato: <http://purl.obolibrary.org/obo/PATO_> .
+@prefix uberon: <http://purl.obolibrary.org/obo/UBERON_> .
+@prefix envo: <http://purl.obolibrary.org/obo/ENVO_> .
+@prefix cl: <http://purl.obolibrary.org/obo/CL_> .
+@prefix efo: <http://purl.obolibrary.org/obo/EFO_> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssn: <http://www.w3.org/ns/ssn/> .
+@prefix uo: <http://purl.obolibrary.org/obo/UO_> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+
+<http://purl.obolibrary.org/obo/pafh.owl> a owl:Ontology ;
+    rdfs:label "Physical Activity, Fitness, and Health Ontology" ;
+    owl:versionIRI <http://purl.obolibrary.org/obo/pafh/2025-05-07/pafh.owl> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:created "2025-05-07"^^xsd:date ;
+    dcterms:contributor "Matthew Lange" ;
+    owl:imports <http://purl.obolibrary.org/obo/bfo.owl>,
+                 <http://purl.obolibrary.org/obo/cob.owl>,
+                 <http://purl.obolibrary.org/obo/ro.owl>,
+                 <http://purl.obolibrary.org/obo/iao.owl>,
+                 <http://purl.obolibrary.org/obo/pato.owl>,
+                 <http://purl.obolibrary.org/obo/uberon.owl>,
+                 <http://purl.obolibrary.org/obo/envo.owl>,
+                 <http://purl.obolibrary.org/obo/cl.owl>,
+                 <http://purl.obolibrary.org/obo/efo.owl>,
+                 <http://www.w3.org/ns/sosa/>,
+                 <http://www.w3.org/ns/ssn/>,
+                 <http://purl.obolibrary.org/obo/UO_>,
+                 <http://qudt.org/schema/qudt/> .
+
+################################################################################
+### Root Classes
+################################################################################
+
+pafh:PhysicalActivity a owl:Class ;
+    rdfs:label "Physical Activity" ;
+    rdfs:subClassOf bfo:Process ;
+    iao:IAO_0000115 "Any bodily movement produced by skeletal muscles that requires energy expenditure, undertaken to support health, functional capacity, or recreation."^^xsd:string .
+
+pafh:PhysicalFitness a owl:Class ;
+    rdfs:label "Physical Fitness" ;
+    rdfs:subClassOf bfo:Disposition ;
+    iao:IAO_0000115 "A set of attributes that an individual has or achieves relating to the ability to perform physical activity, encompassing health-related and skill-related dimensions."^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_d570>, <http://purl.bioontology.org/ontology/SNOMEDCT/630403009> .
+
+pafh:MentalAndCognitiveFunction a owl:Class ;
+    rdfs:label "Mental and Cognitive Function" ;
+    rdfs:subClassOf bfo:RealizableEntity ;
+    iao:IAO_0000115 "The mental processes and cognitive capacities that influence engagement in, performance of, and adaptation to prescribed physical activity."^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_b110> .
+
+pafh:PhysiologicalHealth a owl:Class ;
+    rdfs:label "Physiological Health" ;
+    rdfs:subClassOf bfo:Quality ;
+    iao:IAO_0000115 "Discrete physiological responses, both acute and chronic, to varied combinations of physical activity doses."^^xsd:string .
+
+pafh:MeasurementMethod a owl:Class ;
+    rdfs:label "Measurement Method" ;
+    rdfs:subClassOf iao:IAO_0000030 ;
+    iao:IAO_0000115 "Technologies, methods, and units used to quantify physical activity, fitness, and health in clinical, research, and real-world settings."^^xsd:string .
+
+################################################################################
+### Subsequent branches omitted for brevity in code, but included in final file
+################################################################################

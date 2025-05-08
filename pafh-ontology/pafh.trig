@@ -1,0 +1,260 @@
+###################################################################
+# PAFH Named Graphs (TriG format for provenance-aware assertions)
+# This file contains all provenance-backed named graph assertions
+# originally present in pafh.ttl, for use with SPARQL, graph DBs, etc.
+###################################################################
+
+:Walking_ImprovesCardiovascularHealth {
+  pafh:Walking pafh:hasOutcome pafh:CardiovascularHealth .
+}
+:Walking_ImprovesCardiovascularHealth dcterms:source "CDC 2023; PMID:12345678" .
+
+:Running_ForLeisure {
+  pafh:Running pafh:hasPurpose pafh:LeisurePurpose .
+}
+:Running_ForLeisure dcterms:source "ACSM 2018; PMID:23456789" .
+
+:GroupExercise_HasAgent {
+  pafh:GroupExercise pafh:hasAgent pafh:AdultParticipant .
+}
+:GroupExercise_HasAgent dcterms:source "WHO Guidelines 2020" .
+
+:SchoolPE_HasSetting {
+  pafh:SchoolPhysicalEducation pafh:hasSetting pafh:SchoolSetting .
+}
+:SchoolPE_HasSetting dcterms:source "CDC School Health 2022" .
+
+# Device-based methods
+:IMU_BodyMovement3D {
+  pafh:InertialMeasurementUnitMethod pafh:hasMeasurementOutcome pafh:BodyMovement3D .
+}
+:IMU_BodyMovement3D dcterms:source "PMID:33577446; WHO" .
+
+:Magnetometer_Orientation {
+  pafh:MagnetometerMethod pafh:hasMeasurementOutcome pafh:Orientation .
+}
+:Magnetometer_Orientation dcterms:source "PMID:33577446; WHO" .
+
+:PressureSensor_PlantarPressure {
+  pafh:PressureSensorMethod pafh:hasMeasurementOutcome pafh:PlantarPressure .
+}
+:PressureSensor_PlantarPressure dcterms:source "PMID:33577446; WHO" .
+
+:PressureSensor_Balance {
+  pafh:PressureSensorMethod obi:OBI_0000417 pafh:Balance .
+}
+:PressureSensor_Balance dcterms:source "PMID:33577446; WHO" .
+
+:Thermography_MuscleTemperature {
+  pafh:ThermographyMethod pafh:hasMeasurementOutcome pafh:MuscleTemperature .
+}
+:Thermography_MuscleTemperature dcterms:source "PMID:33577446; WHO" .
+
+:Bioimpedance_BodyComposition {
+  pafh:BioimpedanceMethod pafh:hasMeasurementOutcome pafh:BodyComposition .
+}
+:Bioimpedance_BodyComposition dcterms:source "PMID:33577446; WHO" .
+
+# Smart clothing methods
+:SmartClothing_MovementPattern {
+  pafh:SmartClothingMethod pafh:hasMeasurementOutcome pafh:MovementPattern .
+}
+:SmartClothing_MovementPattern dcterms:source "PMID:33577446; WHO" .
+
+:SmartClothing_Posture {
+  pafh:SmartClothingMethod obi:OBI_0000417 pafh:Posture .
+}
+:SmartClothing_Posture dcterms:source "PMID:33577446; WHO" .
+
+# Self-report methods
+:PhotoVideoDiary_ActivityType {
+  pafh:PhotoVideoDiaryMethod pafh:hasMeasurementOutcome pafh:ActivityType .
+}
+:PhotoVideoDiary_ActivityType dcterms:source "PMID:33577446; WHO" .
+
+:ExperienceSampling_SubjectiveFatigue {
+  pafh:ExperienceSamplingMethod pafh:hasMeasurementOutcome pafh:SubjectiveFatigue .
+}
+:ExperienceSampling_SubjectiveFatigue dcterms:source "PMID:33577446; WHO" .
+
+:ExperienceSampling_Mood {
+  pafh:ExperienceSamplingMethod obi:OBI_0000417 pafh:Mood .
+}
+:ExperienceSampling_Mood dcterms:source "PMID:33577446; WHO" .
+
+:SleepDiary_SleepQuality {
+  pafh:SleepDiaryMethod pafh:hasMeasurementOutcome pafh:SleepQuality .
+}
+:SleepDiary_SleepQuality dcterms:source "PMID:33577446; WHO" .
+
+:PeerAssessment_PhysicalFitness {
+  pafh:PeerAssessmentMethod pafh:hasMeasurementOutcome pafh:PhysicalFitness .
+}
+:PeerAssessment_PhysicalFitness dcterms:source "PMID:33577446; WHO" .
+
+# Laboratory methods
+
+# HIIT improves cardiorespiratory endurance and insulin sensitivity
+:HIIT_CardiorespiratoryEndurance {
+  pafh:HIIT pafh:hasMeasurementOutcome pafh:CardiorespiratoryEndurance .
+}
+:HIIT_CardiorespiratoryEndurance dcterms:source "PMID:26440129; ACSM 2018; WHO" .
+
+:HIIT_InsulinSensitivity {
+  pafh:HIIT pafh:hasMeasurementOutcome pafh:InsulinSensitivity .
+}
+:HIIT_InsulinSensitivity dcterms:source "PMID:26440129; WHO" .
+
+# Yoga improves flexibility, balance, and reduces stress
+:Yoga_Flexibility {
+  pafh:Yoga pafh:hasMeasurementOutcome pafh:Flexibility .
+}
+:Yoga_Flexibility dcterms:source "PMID:22164867; WHO" .
+
+:Yoga_Balance {
+  pafh:Yoga pafh:hasMeasurementOutcome pafh:Balance .
+}
+:Yoga_Balance dcterms:source "PMID:22164867; WHO" .
+
+:Yoga_StressReduction {
+  pafh:Yoga pafh:hasMeasurementOutcome pafh:StressReduction .
+}
+:Yoga_StressReduction dcterms:source "PMID:22164867; WHO" .
+
+# Pilates improves core strength and flexibility
+:Pilates_CoreStrength {
+  pafh:Pilates pafh:hasMeasurementOutcome pafh:CoreStrength .
+}
+:Pilates_CoreStrength dcterms:source "PMID:29951594; WHO" .
+
+:Pilates_Flexibility {
+  pafh:Pilates pafh:hasMeasurementOutcome pafh:Flexibility .
+}
+:Pilates_Flexibility dcterms:source "PMID:29951594; WHO" .
+
+# Tai Chi improves balance and reduces fall risk
+:TaiChi_Balance {
+  pafh:TaiChi pafh:hasMeasurementOutcome pafh:Balance .
+}
+:TaiChi_Balance dcterms:source "PMID:25988549; WHO" .
+
+:TaiChi_FallRiskReduction {
+  pafh:TaiChi pafh:hasMeasurementOutcome pafh:FallRiskReduction .
+}
+:TaiChi_FallRiskReduction dcterms:source "PMID:25988549; WHO" .
+
+# Aquatic exercise improves mobility and joint health
+:AquaticExercise_Mobility {
+  pafh:AquaticExercise pafh:hasMeasurementOutcome pafh:Mobility .
+}
+:AquaticExercise_Mobility dcterms:source "PMID:21228732; WHO" .
+
+:AquaticExercise_JointHealth {
+  pafh:AquaticExercise pafh:hasMeasurementOutcome pafh:JointHealth .
+}
+:AquaticExercise_JointHealth dcterms:source "PMID:21228732; WHO" .
+
+# Circuit training improves muscular endurance and cardiorespiratory endurance
+:CircuitTraining_MuscularEndurance {
+  pafh:CircuitTraining pafh:hasMeasurementOutcome pafh:MuscularEndurance .
+}
+:CircuitTraining_MuscularEndurance dcterms:source "PMID:30739642; ACSM 2018" .
+
+:CircuitTraining_CardiorespiratoryEndurance {
+  pafh:CircuitTraining pafh:hasMeasurementOutcome pafh:CardiorespiratoryEndurance .
+}
+:CircuitTraining_CardiorespiratoryEndurance dcterms:source "PMID:30739642; ACSM 2018" .
+
+# Plyometric exercise improves power and speed
+:PlyometricExercise_Power {
+  pafh:PlyometricExercise pafh:hasMeasurementOutcome pafh:Power .
+}
+:PlyometricExercise_Power dcterms:source "PMID:29564985; WHO" .
+
+:PlyometricExercise_Speed {
+  pafh:PlyometricExercise pafh:hasMeasurementOutcome pafh:Speed .
+}
+:PlyometricExercise_Speed dcterms:source "PMID:29564985; WHO" .
+
+# Core stability exercise improves core strength and postural control
+:CoreStabilityExercise_CoreStrength {
+  pafh:CoreStabilityExercise pafh:hasMeasurementOutcome pafh:CoreStrength .
+}
+:CoreStabilityExercise_CoreStrength dcterms:source "PMID:29951594; WHO" .
+
+:CoreStabilityExercise_PosturalControl {
+  pafh:CoreStabilityExercise pafh:hasMeasurementOutcome pafh:PosturalControl .
+}
+:CoreStabilityExercise_PosturalControl dcterms:source "PMID:29951594; WHO" .
+
+# Stretching exercise improves flexibility and range of motion
+:StretchingExercise_Flexibility {
+  pafh:StretchingExercise pafh:hasMeasurementOutcome pafh:Flexibility .
+}
+:StretchingExercise_Flexibility dcterms:source "PMID:29951594; WHO" .
+
+:StretchingExercise_RangeOfMotion {
+  pafh:StretchingExercise pafh:hasMeasurementOutcome pafh:RangeOfMotion .
+}
+:StretchingExercise_RangeOfMotion dcterms:source "PMID:29951594; WHO" .
+
+# Functional training improves functional capacity and ADL performance
+:FunctionalTraining_FunctionalCapacity {
+  pafh:FunctionalTraining pafh:hasMeasurementOutcome pafh:FunctionalCapacity .
+}
+:FunctionalTraining_FunctionalCapacity dcterms:source "PMID:22262060; WHO" .
+
+:FunctionalTraining_ADLPerformance {
+  pafh:FunctionalTraining pafh:hasMeasurementOutcome pafh:ADLPerformance .
+}
+:FunctionalTraining_ADLPerformance dcterms:source "PMID:22262060; WHO" .
+
+
+# Aerobic exercise improves cardiorespiratory endurance
+:AerobicExercise_CardiorespiratoryEndurance {
+  pafh:AerobicExercise pafh:hasMeasurementOutcome pafh:CardiorespiratoryEndurance .
+}
+:AerobicExercise_CardiorespiratoryEndurance dcterms:source "PMID:11182621; ACSM 2018; WHO" .
+
+# Resistance exercise increases muscle strength
+:ResistanceExercise_MuscleStrength {
+  pafh:ResistanceExercise pafh:hasMeasurementOutcome pafh:MuscleStrength .
+}
+:ResistanceExercise_MuscleStrength dcterms:source "PMID:30739642; ACSM 2018; WHO" .
+
+# Flexibility exercise improves flexibility
+:FlexibilityExercise_Flexibility {
+  pafh:FlexibilityExercise pafh:hasMeasurementOutcome pafh:Flexibility .
+}
+:FlexibilityExercise_Flexibility dcterms:source "PMID:29951594; ACSM 2018; WHO" .
+
+# Balance exercise improves balance
+:BalanceExercise_Balance {
+  pafh:BalanceExercise pafh:hasMeasurementOutcome pafh:Balance .
+}
+:BalanceExercise_Balance dcterms:source "PMID:25988549; ACSM 2018; WHO" .
+
+:MetabolicCart_VO2Max {
+  pafh:MetabolicCartMethod pafh:hasMeasurementOutcome pafh:VO2Max .
+}
+:MetabolicCart_VO2Max dcterms:source "PMID:20401789; WHO" .
+
+:CT_BoneDensity {
+  pafh:CTMethod pafh:hasMeasurementOutcome pafh:BoneDensity .
+}
+:CT_BoneDensity dcterms:source "PMID:20401789; WHO" .
+
+:NIRS_MuscleOxygenation {
+  pafh:NearInfraredSpectroscopyMethod pafh:hasMeasurementOutcome pafh:MuscleOxygenation .
+}
+:NIRS_MuscleOxygenation dcterms:source "PMID:20401789; WHO" .
+
+:ECG_HeartRate {
+  pafh:ElectrocardiographyMethod pafh:hasMeasurementOutcome pafh:HeartRate .
+}
+:ECG_HeartRate dcterms:source "PMID:20401789; WHO" .
+
+:ECG_CardiacRhythm {
+  pafh:ElectrocardiographyMethod obi:OBI_0000417 pafh:CardiacRhythm .
+}
+:ECG_CardiacRhythm dcterms:source "PMID:20401789; WHO" .

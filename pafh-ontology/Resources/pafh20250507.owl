@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:iao="http://purl.obolibrary.org/obo/IAO_"
+   xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/pafh.owl">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:label>Physical Activity, Fitness, and Health Ontology</rdfs:label>
+    <owl:versionIRI rdf:resource="http://purl.obolibrary.org/obo/pafh/2025-05-07/pafh.owl"/>
+    <dcterms:license rdf:resource="https://creativecommons.org/licenses/by/4.0/"/>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2025-05-07</dcterms:created>
+    <dcterms:contributor>Matthew Lange</dcterms:contributor>
+    <owl:imports rdf:resource="http://purl.obolibrary.org/obo/bfo.owl"/>
+    <owl:imports rdf:resource="http://purl.obolibrary.org/obo/cob.owl"/>
+    <owl:imports rdf:resource="http://purl.obolibrary.org/obo/ro.owl"/>
+    <owl:imports rdf:resource="http://purl.obolibrary.org/obo/iao.owl"/>
+    <owl:imports rdf:resource="http://purl.obolibrary.org/obo/pato.owl"/>
+    <owl:imports rdf:resource="http://purl.obolibrary.org/obo/uberon.owl"/>
+    <owl:imports rdf:resource="http://purl.obolibrary.org/obo/envo.owl"/>
+    <owl:imports rdf:resource="http://purl.obolibrary.org/obo/cl.owl"/>
+    <owl:imports rdf:resource="http://purl.obolibrary.org/obo/efo.owl"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_GlobalMentalFunction">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Global Mental Function</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_MentalAndCognitiveFunction"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Overall awareness and orientation to the environment, including consciousness and alertness.</iao:IAO_0000115>
+    <skos:closeMatch rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/???"/>
+    <skos:closeMatch rdf:resource="http://purl.obolibrary.org/obo/ICF_b110"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_StrengthActivity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Strength Activity</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_ActivityType"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Activities designed to increase muscular force capacity through resistance training, such as weightlifting.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_PhysicalFitness">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Physical Fitness</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_Disposition"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A set of attributes that an individual has or achieves relating to the ability to perform physical activity, encompassing health-related and skill-related dimensions.</iao:IAO_0000115>
+    <skos:closeMatch rdf:resource="http://purl.obolibrary.org/obo/ICF_d570"/>
+    <skos:closeMatch rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/630403009"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_PhysicalActivityFrequency">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Physical Activity Frequency</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_Quality"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The number of sessions of a physical activity performed per defined time interval.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_FlexibilityActivity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Flexibility Activity</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_ActivityType"/>
+    <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/UBERON_0004478"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Activities aimed at improving joint range of motion and muscle elasticity, such as yoga or stretching exercises.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_Agility">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Agility</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_SkillRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ability to rapidly change the position of the entire body in space with speed and precision.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_EnduranceActivity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Endurance Activity</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_ActivityType"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Physical activities that require sustained oxygen uptake and repetitive muscle contractions over extended periods, such as running or cycling.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_PhysiologicalHealth">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Physiological Health</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_Quality"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Discrete physiological responses, both acute and chronic, to varied combinations of physical activity doses.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_SkillRelatedFitness">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Skill-Related Fitness</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_PhysicalFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A dimension of physical fitness related to abilities needed for sports performance, such as agility, balance, coordination, power, reaction time, and speed.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_ReactionTime">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Reaction Time</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_SkillRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Time elapsed between the presentation of a stimulus and the initiation of a response.</iao:IAO_0000115>
+    <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/EFO_EFO_0001791"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_PhysicalActivityIntensity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Physical Activity Intensity</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_Quality"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The magnitude of effort required to perform a physical activity, expressed in absolute or relative terms.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_MuscularEndurance">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Muscular Endurance</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_HealthRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ability of muscle groups to perform repeated contractions over time.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_MeasurementMethod">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Measurement Method</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/IAO_IAO_0000030"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Technologies, methods, and units used to quantify physical activity, fitness, and health in clinical, research, and real-world settings.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_Balance">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Balance</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_SkillRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ability to maintain the body's center of gravity within the base of support.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_Speed">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Speed</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_SkillRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ability to perform a movement within a short period of time.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_CardiorespiratoryEndurance">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Cardiorespiratory Endurance</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_HealthRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ability of the cardiovascular and respiratory systems to supply oxygen to working muscles during sustained exercise.</iao:IAO_0000115>
+    <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/EFO_EFO_0004430"/>
+    <skos:closeMatch rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/186281000119106"/>
+    <skos:closeMatch rdf:resource="http://purl.obolibrary.org/obo/ICF_b460"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_HealthRelatedFitness">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Health-Related Fitness</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_PhysicalFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A dimension of physical fitness related to health outcomes and ability to perform daily activities.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_PhysicalActivityDuration">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Physical Activity Duration</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_Quality"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The length of time or number of repetitions used to gauge a bout of physical activity.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_BodyCompositionFitness">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Body Composition</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_HealthRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Relative proportions of fat, muscle, bone, and other tissues in the body.</iao:IAO_0000115>
+    <skos:closeMatch rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/224807006"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_Power">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Power</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_SkillRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ability to exert maximum muscular contraction instantly in an explosive movement.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_MuscularStrength">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Muscular Strength</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_HealthRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Maximum force that a muscle or group can exert against resistance.</iao:IAO_0000115>
+    <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/PATO_PATO_0000052"/>
+    <skos:closeMatch rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/267073007"/>
+    <skos:closeMatch rdf:resource="http://purl.obolibrary.org/obo/ICF_b455"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_Coordination">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Coordination</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_SkillRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ability to use different parts of the body together smoothly and efficiently.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_PhysicalActivityPattern">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Physical Activity Pattern</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_Quality"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The temporal distribution and sequencing of physical activity bouts over time intervals.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_PhysicalActivity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Physical Activity</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_Process"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Any bodily movement produced by skeletal muscles that requires energy expenditure, undertaken to support health, functional capacity, or recreation.</iao:IAO_0000115>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_FlexibilityFitness">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Flexibility</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_HealthRelatedFitness"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range of motion available at a joint or group of joints, influenced by muscle elasticity and joint structure.</iao:IAO_0000115>
+    <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/PATO_PATO_0000651"/>
+    <skos:closeMatch rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/422852003"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_MentalAndCognitiveFunction">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Mental and Cognitive Function</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_RealizableEntity"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The mental processes and cognitive capacities that influence engagement in, performance of, and adaptation to prescribed physical activity.</iao:IAO_0000115>
+    <skos:closeMatch rdf:resource="http://purl.obolibrary.org/obo/ICF_b110"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.obolibrary.org/obo/PAFH_ActivityType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Activity Type</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/PAFH_PhysicalActivity"/>
+    <iao:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The mode or category of a physical activity, describing the type of movement performed, such as running, weightlifting, or yoga.</iao:IAO_0000115>
+  </rdf:Description>
+</rdf:RDF>

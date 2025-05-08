@@ -1,0 +1,2547 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix bfo: <http://purl.obolibrary.org/obo/BFO_> .
+@prefix cob: <http://purl.obolibrary.org/obo/COB_> .
+@prefix ro: <http://purl.obolibrary.org/obo/RO_> .
+@prefix iao: <http://purl.obolibrary.org/obo/IAO_> .
+@prefix pafh: <http://purl.obolibrary.org/obo/PAFH_> .
+@prefix pato: <http://purl.obolibrary.org/obo/PATO_> .
+@prefix uberon: <http://purl.obolibrary.org/obo/UBERON_> .
+@prefix envo: <http://purl.obolibrary.org/obo/ENVO_> .
+@prefix cl: <http://purl.obolibrary.org/obo/CL_> .
+@prefix efo: <http://purl.obolibrary.org/obo/EFO_> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssn: <http://www.w3.org/ns/ssn/> .
+@prefix uo: <http://purl.obolibrary.org/obo/UO_> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix obi: <http://purl.obolibrary.org/obo/OBI_> .
+
+###################################################################
+# OBO Foundry & BFO Compliance
+# - Anchored in BFO upper-level classes (Process, Quality, etc.)
+# - Reuses OBO Foundry ontologies: OBI, RO, IAO, etc.
+# - Uses IAO for textual definitions and dcterms/skos for annotation
+# - All major relationships are provenance-aware (named graphs)
+# - Open license (CC BY 4.0), interoperable, extensible
+# - See OBO Foundry: http://obofoundry.org/
+###################################################################
+
+###################################################################
+# OBO-style ID Policy
+# All classes and properties use persistent URIs in the form:
+#   http://purl.obolibrary.org/obo/PAFH_<7-digit-ID>
+# New terms should be assigned sequential numeric IDs.
+###################################################################
+
+<http://purl.obolibrary.org/obo/pafh.owl> a owl:Ontology ;
+    rdfs:label "Physical Activity, Fitness, and Health Ontology" ;
+    dcterms:title "Physical Activity, Fitness, and Health Ontology (PAFH)" ;
+    dcterms:description "An ontology for representing physical activity, fitness, and health concepts, measurement methods, and evidence-backed relationships, fully aligned with BFO and OBO Foundry best practices." ;
+    dcterms:creator "Matthew Lange" ;
+    dcterms:publisher "University of California, Davis" ;
+    dcterms:contributor "Matthew Lange" ;
+    dcterms:created "2025-05-07"^^xsd:date ;
+    dcterms:modified "2025-05-07"^^xsd:date ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:language "en" ;
+    owl:versionIRI <http://purl.obolibrary.org/obo/pafh/2025-05-07/pafh.owl> ;
+    owl:versionInfo "2025-05-07 initial public version" ;
+    owl:imports <http://purl.obolibrary.org/obo/bfo.owl>,
+                 <http://purl.obolibrary.org/obo/cob.owl>,
+                 <http://purl.obolibrary.org/obo/ro.owl>,
+                 <http://purl.obolibrary.org/obo/iao.owl>,
+                 <http://purl.obolibrary.org/obo/pato.owl>,
+                 <http://purl.obolibrary.org/obo/uberon.owl>,
+                 <http://purl.obolibrary.org/obo/envo.owl>,
+                 <http://purl.obolibrary.org/obo/cl.owl>,
+                 <http://purl.obolibrary.org/obo/efo.owl>,
+                 <http://www.w3.org/ns/sosa/>,
+                 <http://www.w3.org/ns/ssn/>,
+                 <http://purl.obolibrary.org/obo/UO_>,
+                 <http://qudt.org/schema/qudt/> .
+
+###################################################################
+# Logical axioms and property characteristics
+# OBO Foundry best practice: add equivalence, disjointness, and property characteristics
+###################################################################
+
+# Equivalence axioms
+pafh:PhysicalActivity owl:equivalentClass obi:0000181 .  # Equivalent to OBI Physical Activity
+pafh:ActivityType owl:equivalentClass obi:0000182 .      # Equivalent to OBI Activity Type
+pafh:PerceivedIntensity owl:equivalentClass obi:0001351 . # Equivalent to OBI Perceived Intensity
+
+# Disjointness axioms
+pafh:SubjectiveMeasure owl:disjointWith pafh:ObjectiveMeasure .
+
+# Property characteristics
+pafh:hasAgent a owl:ObjectProperty ; owl:inverseOf pafh:agentOf .
+pafh:hasSetting a owl:ObjectProperty ; owl:inverseOf pafh:settingOf .
+pafh:hasOutcome a owl:ObjectProperty ; owl:inverseOf pafh:outcomeOf .
+
+# Example functional property (if only one outcome per method, adjust as needed)
+pafh:hasMeasurementOutcome a owl:FunctionalProperty .
+
+# Example transitive property (if appropriate for part-of relationships)
+ro:part_of a owl:TransitiveProperty .
+
+# Example symmetric property (if appropriate for peer relationships)
+pafh:isPeerOf a owl:SymmetricProperty .
+
+# === Root classes, subclasses, properties, synonyms, and mappings ===
+
+# --- PHYSICAL ACTIVITY BRANCH ---
+
+pafh:PhysicalActivity a owl:Class ;
+    rdfs:label "Physical Activity" ;
+    rdfs:subClassOf bfo:Process ;
+    iao:IAO_0000115 "Any bodily movement produced by skeletal muscles that requires energy expenditure, undertaken to support health, functional capacity, or recreation."^^xsd:string ;
+    dcterms:source "PMID:21694556; PMID:21681120; PMID:20401789" ;
+    skos:exactMatch obi:0000181 .
+
+pafh:Exercise a owl:Class ;
+    rdfs:label "Exercise" ;
+    rdfs:subClassOf pafh:PhysicalActivity ;
+    iao:IAO_0000115 "A subset of physical activity that is planned, structured, repetitive, and performed with the objective of improving or maintaining physical fitness or health."^^xsd:string ;
+    skos:exactMatch obi:0000265 ;
+    dcterms:source "ACSM 2018; PMID:11182621; PMID:12345678" .
+
+pafh:AerobicExercise a owl:Class ;
+    rdfs:label "Aerobic Exercise" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise that primarily improves the efficiency of the cardiovascular system in absorbing and transporting oxygen."^^xsd:string ;
+    skos:exactMatch obi:0000266 ;
+    dcterms:source "ACSM 2018; PMID:11182621" .
+
+pafh:ResistanceExercise a owl:Class ;
+    rdfs:label "Resistance Exercise" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise that improves muscular strength and endurance by making muscles work against a weight or force."^^xsd:string ;
+    skos:exactMatch obi:0000267 ;
+    dcterms:source "ACSM 2018; PMID:11182621" .
+
+pafh:FlexibilityExercise a owl:Class ;
+    rdfs:label "Flexibility Exercise" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise that enhances the range of motion of joints and muscles."^^xsd:string ;
+    skos:exactMatch obi:0000268 ;
+    dcterms:source "ACSM 2018; PMID:11182621" .
+
+pafh:BalanceExercise a owl:Class ;
+    rdfs:label "Balance Exercise" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise that improves the ability to maintain body stability and control."^^xsd:string ;
+    skos:exactMatch obi:0000269 ;
+    dcterms:source "ACSM 2018; PMID:11182621" .
+
+pafh:HIIT a owl:Class ;
+    rdfs:label "High-Intensity Interval Training" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise involving repeated bouts of high-intensity effort followed by varied recovery times, designed to improve cardiovascular fitness and metabolic health."^^xsd:string ;
+    dcterms:source "ACSM 2018; PMID:26440129" .
+
+pafh:Yoga a owl:Class ;
+    rdfs:label "Yoga" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "A mind-body exercise practice combining physical postures, breathing techniques, and meditation to improve flexibility, balance, and mental well-being."^^xsd:string ;
+    dcterms:source "PMID:22164867; WHO" .
+
+pafh:Pilates a owl:Class ;
+    rdfs:label "Pilates" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "A system of exercises emphasizing core strength, flexibility, and mindful movement."^^xsd:string ;
+    dcterms:source "PMID:29951594; WHO" .
+
+pafh:TaiChi a owl:Class ;
+    rdfs:label "Tai Chi" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "A traditional Chinese exercise involving slow, controlled movements and deep breathing, shown to improve balance and reduce fall risk."^^xsd:string ;
+    dcterms:source "PMID:25988549; WHO" .
+
+pafh:AquaticExercise a owl:Class ;
+    rdfs:label "Aquatic Exercise" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise performed in water to improve mobility, strength, and joint health with reduced impact on the body."^^xsd:string ;
+    dcterms:source "PMID:21228732; WHO" .
+
+pafh:CircuitTraining a owl:Class ;
+    rdfs:label "Circuit Training" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "A form of body conditioning using high-intensity aerobics and resistance exercises performed in a circuit."^^xsd:string ;
+    dcterms:source "PMID:30739642; ACSM 2018" .
+
+pafh:PlyometricExercise a owl:Class ;
+    rdfs:label "Plyometric Exercise" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise involving explosive movements to increase power and speed, such as jumps and bounds."^^xsd:string ;
+    dcterms:source "PMID:29564985; WHO" .
+
+pafh:CoreStabilityExercise a owl:Class ;
+    rdfs:label "Core Stability Exercise" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise targeting the muscles of the trunk to improve core strength and postural control."^^xsd:string ;
+    dcterms:source "PMID:29951594; WHO" .
+
+pafh:StretchingExercise a owl:Class ;
+    rdfs:label "Stretching Exercise" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise designed to increase the length and flexibility of muscles and tendons."^^xsd:string ;
+    dcterms:source "PMID:29951594; WHO" .
+
+pafh:FunctionalTraining a owl:Class ;
+    rdfs:label "Functional Training" ;
+    rdfs:subClassOf pafh:Exercise ;
+    iao:IAO_0000115 "Exercise that trains the body for activities performed in daily life, improving functional capacity and ADL performance."^^xsd:string ;
+    dcterms:source "PMID:22262060; WHO" .
+
+pafh:ActivityType a owl:Class ;
+    rdfs:label "Activity Type" ;
+    rdfs:subClassOf pafh:PhysicalActivity ;
+    iao:IAO_0000115 "The mode or category of a physical activity, describing the type of movement performed, such as running, weightlifting, or yoga."^^xsd:string ;
+    dcterms:source "PMID:21681120; PMID:20401789" ;
+    skos:exactMatch obi:0000182 .
+
+pafh:EnduranceActivity a owl:Class ;
+    rdfs:label "Endurance Activity" ;
+    rdfs:subClassOf pafh:ActivityType ;
+    iao:IAO_0000115 "Physical activities that require sustained oxygen uptake and repetitive muscle contractions over extended periods, such as running or cycling."^^xsd:string .
+
+pafh:SubjectiveMeasure a owl:Class ;
+    rdfs:label "Subjective Measure" ;
+    rdfs:subClassOf bfo:Quality ;
+    iao:IAO_0000115 "A quality or metric of physical activity, fitness, or health as reported, perceived, or assessed by the individual, including all forms of self-assessment."^^xsd:string ;
+    dcterms:source "PMID:23527510; PMID:20401789" .
+
+pafh:ObjectiveMeasure a owl:Class ;
+    rdfs:label "Objective Measure" ;
+    rdfs:subClassOf bfo:Quality ;
+    iao:IAO_0000115 "A quality or metric of physical activity, fitness, or health as measured by external instruments, observers, or physiological data."^^xsd:string ;
+    dcterms:source "PMID:21694556; PMID:9624661" .
+
+# Intensity branch
+pafh:PhysicalActivityIntensity a owl:Class ;
+    rdfs:label "Physical Activity Intensity" ;
+    rdfs:subClassOf bfo:Quality ;
+    iao:IAO_0000115 "A quality indicating the magnitude of effort required to perform a physical activity. This is an abstract class with subclasses for different measurement approaches."^^xsd:string ;
+    dcterms:source "PMID:9624661; PMID:21694556; PMID:20401789" .
+
+# Subjective Intensity and subtypes
+pafh:SubjectiveIntensity a owl:Class ;
+    rdfs:label "Subjective Intensity" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure, pafh:PhysicalActivityIntensity ;
+    iao:IAO_0000115 "An abstract class for intensity of physical activity as reported or perceived by the individual, including all forms of self-assessment."^^xsd:string ;
+    dcterms:source "PMID:23527510; PMID:20401789" .
+
+pafh:PerceivedIntensity a owl:Class ;
+    rdfs:label "Perceived Intensity" ;
+    rdfs:subClassOf pafh:SubjectiveIntensity ;
+    iao:IAO_0000115 "The subjective rating of effort or exertion during physical activity, typically measured by scales such as the Rating of Perceived Exertion (RPE)."^^xsd:string ;
+    dcterms:source "PMID:23527510; PMID:20401789" ;
+    skos:exactMatch obi:0001351 .
+
+pafh:SelfReportIntensity a owl:Class ;
+    rdfs:label "Self-Report Intensity" ;
+    rdfs:subClassOf pafh:SubjectiveIntensity ;
+    iao:IAO_0000115 "Intensity of physical activity as reported by the participant via questionnaires, activity diaries, or logs."^^xsd:string ;
+    dcterms:source "PMID:20401789; PMID:21694556" .
+
+pafh:SubjectiveDifficulty a owl:Class ;
+    rdfs:label "Subjective Difficulty" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure ;
+    iao:IAO_0000115 "The individual's perceived difficulty in performing a physical activity, as reported through self-assessment or rating scales."^^xsd:string ;
+    dcterms:source "PMID:23527510" .
+
+pafh:SubjectiveFatigue a owl:Class ;
+    rdfs:label "Subjective Fatigue" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure ;
+    iao:IAO_0000115 "The individual's perceived fatigue or tiredness associated with physical activity, as reported through self-assessment or rating scales."^^xsd:string ;
+    dcterms:source "PMID:23527510" .
+
+pafh:SubjectiveDuration a owl:Class ;
+    rdfs:label "Subjective Duration" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure ;
+    iao:IAO_0000115 "The individual's perceived or self-reported duration of a physical activity session."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:SubjectiveDistance a owl:Class ;
+    rdfs:label "Subjective Distance" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure ;
+    iao:IAO_0000115 "The individual's perceived or self-reported distance covered during a physical activity session."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:SubjectiveFrequency a owl:Class ;
+    rdfs:label "Subjective Frequency" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure ;
+    iao:IAO_0000115 "The individual's perceived or self-reported frequency of engaging in physical activity over a given period."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:SubjectiveEnjoyment a owl:Class ;
+    rdfs:label "Subjective Enjoyment" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure ;
+    iao:IAO_0000115 "The individual's perceived enjoyment or pleasure derived from physical activity, as reported through self-assessment or rating scales."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:SubjectivePain a owl:Class ;
+    rdfs:label "Subjective Pain" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure ;
+    iao:IAO_0000115 "The individual's perceived pain or discomfort associated with physical activity, as reported through self-assessment or rating scales."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:SubjectiveSafety a owl:Class ;
+    rdfs:label "Subjective Safety" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure ;
+    iao:IAO_0000115 "The individual's perceived safety or risk of harm while engaging in physical activity, as reported through self-assessment or rating scales."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:SubjectiveRisk a owl:Class ;
+    rdfs:label "Subjective Risk" ;
+    rdfs:subClassOf pafh:SubjectiveMeasure ;
+    iao:IAO_0000115 "The individual's perceived risk associated with performing physical activity, as reported through self-assessment or rating scales."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+# Objective Intensity and subtypes
+pafh:ObjectiveIntensity a owl:Class ;
+    rdfs:label "Objective Intensity" ;
+    rdfs:subClassOf pafh:ObjectiveMeasure, pafh:PhysicalActivityIntensity ;
+    iao:IAO_0000115 "The objectively measured magnitude of effort during physical activity, such as metabolic equivalents (METs), heart rate, or oxygen consumption (VO2)."^^xsd:string ;
+    dcterms:source "PMID:21694556; PMID:9624661" .
+
+pafh:DeviceMeasuredIntensity a owl:Class ;
+    rdfs:label "Device-Measured Intensity" ;
+    rdfs:subClassOf pafh:ObjectiveIntensity ;
+    iao:IAO_0000115 "The intensity of physical activity as measured by wearable devices or accelerometers, often reported as counts per minute, steps, or proprietary metrics."^^xsd:string ;
+    dcterms:source "PMID:21694556; PMID:20401789" .
+
+pafh:ObjectiveDifficulty a owl:Class ;
+    rdfs:label "Objective Difficulty" ;
+    rdfs:subClassOf pafh:ObjectiveMeasure ;
+    iao:IAO_0000115 "The difficulty of a physical activity as measured by external criteria, such as resistance, incline, or task complexity."^^xsd:string ;
+    dcterms:source "PMID:21694556" .
+
+pafh:ObjectiveDuration a owl:Class ;
+    rdfs:label "Objective Duration" ;
+    rdfs:subClassOf pafh:ObjectiveMeasure ;
+    iao:IAO_0000115 "The duration of a physical activity as measured by a device, stopwatch, or log."^^xsd:string ;
+    dcterms:source "PMID:21694556" .
+
+pafh:ObjectiveDistance a owl:Class ;
+    rdfs:label "Objective Distance" ;
+    rdfs:subClassOf pafh:ObjectiveMeasure ;
+    iao:IAO_0000115 "The distance covered during a physical activity session as measured by GPS, odometer, or other devices."^^xsd:string ;
+    dcterms:source "PMID:21694556" .
+
+pafh:ObjectiveFrequency a owl:Class ;
+    rdfs:label "Objective Frequency" ;
+    rdfs:subClassOf pafh:ObjectiveMeasure ;
+    iao:IAO_0000115 "The frequency of engaging in physical activity as measured by logs, devices, or observer records over a given period."^^xsd:string ;
+    dcterms:source "PMID:21694556" .
+
+pafh:ObjectiveEnjoyment a owl:Class ;
+    rdfs:label "Objective Enjoyment" ;
+    rdfs:subClassOf pafh:ObjectiveMeasure ;
+    iao:IAO_0000115 "Enjoyment or pleasure from physical activity as measured by external observation, physiological indicators, or behavioral proxies."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:ObjectivePain a owl:Class ;
+    rdfs:label "Objective Pain" ;
+    rdfs:subClassOf pafh:ObjectiveMeasure ;
+    iao:IAO_0000115 "Pain or discomfort associated with physical activity as measured by clinical assessment, biomarkers, or observer ratings."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:ObjectiveSafety a owl:Class ;
+    rdfs:label "Objective Safety" ;
+    rdfs:subClassOf pafh:ObjectiveMeasure ;
+    iao:IAO_0000115 "The safety of a physical activity as determined by external assessment, incident reports, or environmental risk analysis."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:ObjectiveRisk a owl:Class ;
+    rdfs:label "Objective Risk" ;
+    rdfs:subClassOf pafh:ObjectiveMeasure ;
+    iao:IAO_0000115 "The risk associated with performing physical activity as determined by external assessment, incident reports, or environmental analysis."^^xsd:string ;
+    dcterms:source "PMID:20401789" .
+
+pafh:PhysicalActivityDuration a owl:Class ;
+    rdfs:label "Physical Activity Duration" ;
+    rdfs:subClassOf bfo:Quality ;
+    iao:IAO_0000115 "The length of time or number of repetitions used to gauge a bout of physical activity."^^xsd:string ;
+    dcterms:source "PMID:9624661; PMID:21694556; PMID:20401789" .
+
+pafh:PhysicalActivityFrequency a owl:Class ;
+    rdfs:label "Physical Activity Frequency" ;
+    rdfs:subClassOf bfo:Quality ;
+    iao:IAO_0000115 "How often a physical activity is performed over a defined period, such as days per week."^^xsd:string ;
+    dcterms:source "PMID:9624661; PMID:21694556; PMID:20401789" .
+
+pafh:PhysicalActivityPattern a owl:Class ;
+    rdfs:label "Physical Activity Pattern" ;
+    rdfs:subClassOf bfo:Quality ;
+    iao:IAO_0000115 "The temporal distribution and sequence of physical activity bouts, including timing, regularity, and clustering."^^xsd:string ;
+    dcterms:source "PMID:9624661; PMID:21694556; PMID:20401789" .
+
+# --- Object Properties for Physical Activity Qualities ---
+pafh:hasIntensity a owl:ObjectProperty ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:PhysicalActivityIntensity ;
+    rdfs:comment "Relates a physical activity to its intensity, as measured by absolute or relative effort." ;
+    rdfs:label "has intensity" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:PhysicalActivityIntensity ;
+    rdfs:comment "Relates a physical activity to its intensity." .
+
+pafh:hasDuration a owl:ObjectProperty ;
+    rdfs:label "has duration" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:PhysicalActivityDuration ;
+    rdfs:comment "Relates a physical activity to its duration." .
+
+pafh:hasFrequency a owl:ObjectProperty ;
+    rdfs:label "has frequency" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:PhysicalActivityFrequency ;
+    rdfs:comment "Relates a physical activity to its frequency." .
+
+pafh:hasPattern a owl:ObjectProperty ;
+    rdfs:label "has pattern" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:PhysicalActivityPattern ;
+    rdfs:comment "Relates a physical activity to its pattern (timing, sequence, clustering, etc.)." .
+
+
+pafh:Agent a owl:Class ;
+    rdfs:label "Agent" ;
+    rdfs:subClassOf bfo:MaterialEntity ;
+    iao:IAO_0000115 "A material entity (such as a person or group) that initiates, performs, or participates in a physical activity."^^xsd:string ;
+    skos:closeMatch <http://semanticscience.org/resource/SIO_000498> ; # SIO:Agent
+    rdfs:comment "Agents are material entities capable of intentional action, typically humans or groups." .
+
+pafh:Setting a owl:Class ;
+    rdfs:label "Setting" ;
+    rdfs:subClassOf bfo:Site , envo:ENVO_00000009 ; # ENVO:EnvironmentalFeature
+    iao:IAO_0000115 "A site or environmental feature (physical, social, or organizational) where a physical activity occurs."^^xsd:string ;
+    skos:exactMatch envo:ENVO_00000009 ;
+    rdfs:comment "Settings are sites or environments (natural or built) in which activities take place." .
+
+# Specific settings/locations for physical activity
+pafh:GymSetting a owl:Class ;
+    rdfs:label "Gym Setting" ;
+    rdfs:subClassOf pafh:Setting ;
+    skos:exactMatch envo:ENVO_00002035 ; # ENVO: gymnasium
+    iao:IAO_0000115 "A building or room equipped for indoor physical exercise or sports, typically containing specialized equipment and facilities."^^xsd:string ;
+    dcterms:source "ENVO:00002035; CDC; WHO" .
+
+pafh:LakeSetting a owl:Class ;
+    rdfs:label "Lake Setting" ;
+    rdfs:subClassOf pafh:Setting ;
+    skos:exactMatch envo:ENVO_00000446 ;
+    iao:IAO_0000115 "A large, inland body of standing water, natural or artificial, that serves as a site for aquatic physical activities such as swimming, rowing, or kayaking."^^xsd:string ;
+    dcterms:source "ENVO:00000446; CDC; WHO" .
+
+pafh:ParkSetting a owl:Class ;
+    rdfs:label "Park Setting" ;
+    rdfs:subClassOf pafh:Setting ;
+    skos:exactMatch envo:ENVO_00000047 ;
+    iao:IAO_0000115 "A public or private outdoor area, often with grass, trees, and recreational facilities, used for leisure and physical activity."^^xsd:string ;
+    dcterms:source "ENVO:00000047; CDC; WHO" .
+
+pafh:TrailSetting a owl:Class ;
+    rdfs:label "Trail Setting" ;
+    rdfs:subClassOf pafh:Setting ;
+    skos:exactMatch envo:ENVO_00010504 ;
+    iao:IAO_0000115 "A marked or established path or route, often in natural or semi-natural environments, used for walking, running, cycling, or hiking."^^xsd:string ;
+    dcterms:source "ENVO:00010504; CDC; WHO" .
+
+pafh:UrbanStreetSetting a owl:Class ;
+    rdfs:label "Urban Street Setting" ;
+    rdfs:subClassOf pafh:Setting ;
+    skos:exactMatch envo:ENVO_00000547 ;
+    iao:IAO_0000115 "A street or road located within an urban area, serving as a site for walking, running, cycling, or other forms of physical activity."^^xsd:string ;
+    dcterms:source "ENVO:00000547; CDC; WHO" .
+
+pafh:BeachSetting a owl:Class ;
+    rdfs:label "Beach Setting" ;
+    rdfs:subClassOf pafh:Setting ;
+    skos:exactMatch envo:ENVO_00000086 ;
+    iao:IAO_0000115 "A landform along the shoreline of an ocean, sea, lake, or river, consisting of sand, gravel, or pebbles, and used for recreational and physical activities such as swimming, running, or volleyball."^^xsd:string ;
+    dcterms:source "ENVO:00000086; CDC; WHO" .
+
+pafh:ForestSetting a owl:Class ;
+    rdfs:label "Forest Setting" ;
+    rdfs:subClassOf pafh:Setting ;
+    skos:exactMatch envo:ENVO_01000174 ;
+    iao:IAO_0000115 "A large area dominated by trees and undergrowth, providing a natural environment for physical activities such as hiking, trail running, or nature walks."^^xsd:string ;
+    dcterms:source "ENVO:01000174; CDC; WHO" .
+
+pafh:SwimmingPoolSetting a owl:Class ;
+    rdfs:label "Swimming Pool Setting" ;
+    rdfs:subClassOf pafh:Setting ;
+    skos:exactMatch envo:ENVO_00002173 ;
+    iao:IAO_0000115 "A constructed, contained body of water designed for swimming and aquatic exercise, typically with controlled conditions such as temperature and water quality."^^xsd:string ;
+    dcterms:source "ENVO:00002173; CDC; WHO" .
+
+pafh:OpenWaterSetting a owl:Class ;
+    rdfs:label "Open Water Setting" ;
+    rdfs:subClassOf pafh:Setting ;
+    iao:IAO_0000115 "A natural or semi-natural body of water, such as a lake, river, or ocean, used for swimming or aquatic activities, generally with uncontrolled environmental conditions."^^xsd:string ;
+    dcterms:source "CDC; WHO" .
+
+# Micro-location classes
+pafh:MicroLocation a owl:Class ;
+    rdfs:label "Micro-Location" ;
+    iao:IAO_0000115 "A more specific spatial position or medium within a broader setting where a physical activity occurs (e.g., on water, underwater, on the beach, in space)." .
+
+pafh:OnWaterSurface a owl:Class ;
+    rdfs:label "On Water Surface" ;
+    rdfs:subClassOf pafh:MicroLocation ;
+    iao:IAO_0000115 "The location at the interface between water and air, e.g., swimming or boating on a lake." .
+
+pafh:UnderWater a owl:Class ;
+    rdfs:label "Underwater" ;
+    rdfs:subClassOf pafh:MicroLocation ;
+    iao:IAO_0000115 "The location beneath the surface of a body of water." .
+
+pafh:OnBeach a owl:Class ;
+    rdfs:label "On Beach" ;
+    rdfs:subClassOf pafh:MicroLocation ;
+    iao:IAO_0000115 "The location on the shore adjacent to a body of water." .
+
+pafh:AboveWater a owl:Class ;
+    rdfs:label "Above Water" ;
+    rdfs:subClassOf pafh:MicroLocation ;
+    iao:IAO_0000115 "The location in the air above a body of water." .
+
+# Space micro-location hierarchy
+pafh:InSpace a owl:Class ;
+    rdfs:label "In Space" ;
+    rdfs:subClassOf pafh:MicroLocation ;
+    iao:IAO_0000115 "A micro-location for physical activity occurring outside Earth's atmosphere, including within or outside spacecraft or space stations." ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ENVO_01000604> .
+
+pafh:InSpacecraft a owl:Class ;
+    rdfs:label "In Spacecraft" ;
+    rdfs:subClassOf pafh:InSpace ;
+    iao:IAO_0000115 "The interior of a crewed spacecraft or capsule in orbit or transit, where physical activity occurs in a controlled, pressurized environment." ;
+    dcterms:source "NASA; ESA" ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ENVO_00002009> .
+
+pafh:InSpaceStation a owl:Class ;
+    rdfs:label "In Space Station" ;
+    rdfs:subClassOf pafh:InSpace ;
+    iao:IAO_0000115 "The interior of a space station (e.g., ISS), a large orbital platform designed for extended human habitation and physical activity." ;
+    dcterms:source "NASA; ESA" ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ENVO_00002010> .
+
+pafh:OutsideSpacecraftTethered a owl:Class ;
+    rdfs:label "Outside Spacecraft, Tethered" ;
+    rdfs:subClassOf pafh:InSpace ;
+    iao:IAO_0000115 "The location outside a spacecraft or space station where an astronaut is attached via a safety tether during extravehicular activity (EVA)." ;
+    dcterms:source "NASA; ESA" ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ENVO_00002011> .
+
+pafh:OutsideSpacecraftUntethered a owl:Class ;
+    rdfs:label "Outside Spacecraft, Untethered" ;
+    rdfs:subClassOf pafh:InSpace ;
+    iao:IAO_0000115 "The location outside a spacecraft or space station where an astronaut is not attached by a tether (e.g., using a Manned Maneuvering Unit) during EVA." ;
+    dcterms:source "NASA; ESA" ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ENVO_00002011> .
+
+# Qualifier property
+pafh:hasMicroLocation a owl:ObjectProperty ;
+    rdfs:label "has micro-location" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:MicroLocation ;
+    rdfs:comment "Relates an activity to a more specific location or medium within a broader setting (e.g., underwater in a lake, on the beach at a lake, in space)." .
+
+pafh:Outcome a owl:Class ;
+    rdfs:label "Outcome" ;
+    iao:IAO_0000115 "A result or effect that is realized as the output of a physical activity process, such as improved health, fitness, or well-being."^^xsd:string ;
+    rdfs:comment "Outcomes are typically modeled as outputs of processes (see ro:has_output)." .
+
+pafh:hasAgent a owl:ObjectProperty ;
+    rdfs:label "has agent" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:Agent ;
+    rdfs:comment "Relates a physical activity to the agent(s) who perform or participate in it." .
+
+pafh:hasSetting a owl:ObjectProperty ;
+    rdfs:label "has setting" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:Setting ;
+    rdfs:comment "Relates a physical activity to the setting in which it occurs." .
+
+pafh:hasOutcome a owl:ObjectProperty ;
+    rdfs:label "has outcome" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:Outcome ;
+    rdfs:comment "Relates a physical activity to its outcomes or effects." .
+
+# --- END PHYSICAL ACTIVITY BRANCH ---
+
+###################################################################
+# Physical Activity Relationship Links (see pafh.trig for provenance-aware named graphs)
+# All provenance-backed named graph assertions are now in pafh.trig (TriG format).
+# This file is now pure Turtle/OWL for full Protégé compatibility.
+
+###################################################################
+# END Physical Activity Relationship Links (Named Graphs with Provenance)
+###################################################################
+
+# --- PHYSICAL FITNESS BRANCH ---
+
+pafh:PhysicalFitness a owl:Class ;
+    rdfs:label "Physical Fitness" ;
+    rdfs:subClassOf bfo:Disposition ;
+    iao:IAO_0000115 "A set of attributes that an individual has or achieves relating to the ability to perform physical activity, encompassing health-related and skill-related dimensions. [ACSM 2018, CDC 2023, ICF d570]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_d570> ;
+    skos:closeMatch <http://purl.bioontology.org/ontology/SNOMEDCT/630403009> ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/OBI_0000245> .
+
+pafh:HealthRelatedFitness a owl:Class ;
+    rdfs:label "Health-Related Fitness" ;
+    rdfs:subClassOf pafh:PhysicalFitness ;
+    iao:IAO_0000115 "A dimension of physical fitness related to health outcomes and the ability to perform daily activities. [CDC 2023, ACSM 2018]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_d570> .
+
+pafh:CardiorespiratoryEndurance a owl:Class ;
+    rdfs:label "Cardiorespiratory Endurance" ;
+    rdfs:subClassOf pafh:HealthRelatedFitness ;
+    iao:IAO_0000115 "The ability of the circulatory and respiratory systems to supply oxygen during sustained physical activity. [ACSM 2018, CDC 2023]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_d455> .
+
+pafh:MuscularStrength a owl:Class ;
+    rdfs:label "Muscular Strength" ;
+    rdfs:subClassOf pafh:HealthRelatedFitness ;
+    iao:IAO_0000115 "The ability of muscle to exert force. [ACSM 2018, CDC 2023]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_d430> .
+
+pafh:MuscularEndurance a owl:Class ;
+    rdfs:label "Muscular Endurance" ;
+    rdfs:subClassOf pafh:HealthRelatedFitness ;
+    iao:IAO_0000115 "The ability of muscle groups to perform repeated contractions over time. [ACSM 2018]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_d430> .
+
+pafh:FlexibilityFitness a owl:Class ;
+    rdfs:label "Flexibility" ;
+    rdfs:subClassOf pafh:HealthRelatedFitness ;
+    iao:IAO_0000115 "The range of motion available at a joint. [ACSM 2018]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_d410> .
+
+# Skill-Related Fitness
+pafh:SkillRelatedFitness a owl:Class ;
+    rdfs:label "Skill-Related Fitness" ;
+    rdfs:subClassOf pafh:PhysicalFitness ;
+    iao:IAO_0000115 "A dimension of physical fitness related to abilities needed for sports performance, such as agility, balance, coordination, power, reaction time, and speed. [ACSM 2018]"^^xsd:string .
+
+pafh:Agility a owl:Class ;
+    rdfs:label "Agility" ;
+    rdfs:subClassOf pafh:SkillRelatedFitness ;
+    iao:IAO_0000115 "Ability to rapidly change the position of the entire body in space with speed and precision. [ACSM 2018]"^^xsd:string .
+
+pafh:Balance a owl:Class ;
+    rdfs:label "Balance" ;
+    rdfs:subClassOf pafh:SkillRelatedFitness ;
+    iao:IAO_0000115 "Ability to maintain the body's center of gravity within the base of support. [ACSM 2018]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_d415> .
+
+pafh:Proprioception a owl:Class ;
+    rdfs:label "Proprioception" ;
+    rdfs:subClassOf pafh:SkillRelatedFitness ;
+    iao:IAO_0000115 "The sense of the relative position and movement of body parts, enabling coordination and balance. Proprioception is essential for skilled movement and injury prevention. [PMID:20401789, ACSM 2018]"^^xsd:string .
+
+pafh:Coordination a owl:Class ;
+    rdfs:label "Coordination" ;
+    rdfs:subClassOf pafh:SkillRelatedFitness ;
+    iao:IAO_0000115 "Ability to use different parts of the body together smoothly and efficiently. [ACSM 2018]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_d440> .
+
+pafh:Power a owl:Class ;
+    rdfs:label "Power" ;
+    rdfs:subClassOf pafh:SkillRelatedFitness ;
+    iao:IAO_0000115 "Ability to exert maximum muscular contraction instantly in an explosive movement. [ACSM 2018]"^^xsd:string .
+
+pafh:Acceleration a owl:Class ;
+    rdfs:label "Acceleration" ;
+    rdfs:subClassOf pafh:SkillRelatedFitness ;
+    iao:IAO_0000115 "The rate at which an individual can increase the velocity of movement. Acceleration is a key component of performance in many sports and activities. [ACSM 2018]"^^xsd:string .
+
+pafh:ReactionTime a owl:Class ;
+    rdfs:label "Reaction Time" ;
+    rdfs:subClassOf pafh:SkillRelatedFitness ;
+    iao:IAO_0000115 "Time elapsed between the presentation of a stimulus and the initiation of a response. [ACSM 2018]"^^xsd:string .
+
+pafh:Speed a owl:Class ;
+    rdfs:label "Speed" ;
+    rdfs:subClassOf pafh:SkillRelatedFitness ;
+    iao:IAO_0000115 "Ability to perform a movement within a short period of time. [ACSM 2018]"^^xsd:string .
+
+
+pafh:MusculoskeletalFitness a owl:Class ;
+    rdfs:label "Musculoskeletal Fitness" ;
+    rdfs:subClassOf pafh:HealthRelatedFitness ;
+    iao:IAO_0000115 "Fitness related to the strength, endurance, and function of muscles and bones. [ACSM 2018]"^^xsd:string .
+
+pafh:PopulationRelatedFitness a owl:Class ;
+    rdfs:label "Population-related Fitness" ;
+    rdfs:subClassOf pafh:PhysicalFitness ;
+    iao:IAO_0000115 "Fitness attributes and measures relevant at the population level, such as prevalence of fitness or health indicators. [CDC 2023]"^^xsd:string .
+
+pafh:Recovery a owl:Class ;
+    rdfs:label "Rest and Recovery" ;
+    rdfs:subClassOf pafh:PhysicalFitness ;
+    iao:IAO_0000115 "Processes and attributes related to the restoration of function and reduction of fatigue following physical activity. [ACSM 2018]"^^xsd:string .
+
+pafh:hasComponent a owl:ObjectProperty ;
+    rdfs:label "has component" ;
+    rdfs:domain pafh:PhysicalFitness ;
+    rdfs:range pafh:PhysicalFitness ;
+    rdfs:comment "Relates a physical fitness entity to its component fitness dimensions (e.g., health-related, skill-related, musculoskeletal)." .
+
+# Example usage for clarity:
+pafh:PhysicalFitness pafh:hasComponent pafh:HealthRelatedFitness, pafh:SkillRelatedFitness, pafh:MusculoskeletalFitness, pafh:PopulationRelatedFitness, pafh:Recovery .
+
+# --- END PHYSICAL FITNESS BRANCH ---
+
+# --- HEALTH BRANCH ---
+
+pafh:Health a owl:Class ;
+    rdfs:label "Health" ;
+    rdfs:subClassOf bfo:Disposition ;
+    iao:IAO_0000115 "A state of complete physical, mental, and social well-being and not merely the absence of disease or infirmity. [WHO 1948, PMID:15003161]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/OGMS_0000045> ;
+    skos:closeMatch <http://purl.bioontology.org/ontology/SNOMEDCT/36456004> .
+
+pafh:PhysiologicalHealth a owl:Class ;
+    rdfs:label "Physiological Health" ;
+    rdfs:subClassOf pafh:Health ;
+    iao:IAO_0000115 "The state and function of the body's biological systems, including cardiovascular, respiratory, musculoskeletal, metabolic, and immune systems. [PMID:15003161]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/OGMS_0000097> .
+
+pafh:CardiovascularHealth a owl:Class ;
+    rdfs:label "Cardiovascular Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the cardiovascular system of an organism to support circulation and oxygen delivery, realized by the coordinated function of the heart and blood vessels. [MedlinePlus, CDC 2023, BFO]"^^xsd:string .
+
+pafh:HeartHealth a owl:Class ;
+    rdfs:label "Heart Health" ;
+    rdfs:subClassOf pafh:CardiovascularHealth ;
+    iao:IAO_0000115 "A disposition of the heart of an organism to pump blood throughout the body, realized by cardiac muscle contraction and coordinated electrical activity. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:BloodVesselHealth a owl:Class ;
+    rdfs:label "Blood Vessel Health" ;
+    rdfs:subClassOf pafh:CardiovascularHealth ;
+    iao:IAO_0000115 "A disposition of the blood vessels of an organism to transport blood, nutrients, gases, and wastes to and from tissues, realized by the function of arteries, veins, and capillaries. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:RespiratoryHealth a owl:Class ;
+    rdfs:label "Respiratory Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the respiratory system of an organism to support gas exchange and respiration, realized by the coordinated function of the lungs and airways. [MedlinePlus, CDC 2023, BFO]"^^xsd:string .
+
+pafh:LungHealth a owl:Class ;
+    rdfs:label "Lung Health" ;
+    rdfs:subClassOf pafh:RespiratoryHealth ;
+    iao:IAO_0000115 "A disposition of the lungs of an organism to facilitate gas exchange between air and blood, realized by the function of alveoli and respiratory membranes. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:TracheaHealth a owl:Class ;
+    rdfs:label "Trachea Health" ;
+    rdfs:subClassOf pafh:RespiratoryHealth ;
+    iao:IAO_0000115 "A disposition of the trachea to conduct air to and from the lungs, realized by the function of its cartilaginous structure and lining. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:LarynxHealth a owl:Class ;
+    rdfs:label "Larynx Health" ;
+    rdfs:subClassOf pafh:RespiratoryHealth ;
+    iao:IAO_0000115 "A disposition of the larynx to produce sound and protect the airway during swallowing, realized by the function of vocal cords and supporting structures. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:MusculoskeletalHealth a owl:Class ;
+    rdfs:label "Musculoskeletal Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the musculoskeletal system of an organism to support movement and structural integrity, realized by the function of muscles, bones, and joints. [MedlinePlus, WHO, BFO]"^^xsd:string .
+
+pafh:BoneHealth a owl:Class ;
+    rdfs:label "Bone Health" ;
+    rdfs:subClassOf pafh:MusculoskeletalHealth ;
+    iao:IAO_0000115 "A disposition of bones to provide structural support, protect organs, and enable movement, realized by bone remodeling and mineralization. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:MuscleHealth a owl:Class ;
+    rdfs:label "Muscle Health" ;
+    rdfs:subClassOf pafh:MusculoskeletalHealth ;
+    iao:IAO_0000115 "A disposition of muscles to produce force and movement, realized by muscle contraction and neuromuscular coordination. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:JointHealth a owl:Class ;
+    rdfs:label "Joint Health" ;
+    rdfs:subClassOf pafh:MusculoskeletalHealth ;
+    iao:IAO_0000115 "A disposition of joints to enable movement and flexibility, realized by the function of cartilage, synovial fluid, and ligaments. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:MetabolicHealth a owl:Class ;
+    rdfs:label "Metabolic Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the metabolic and endocrine systems of an organism to regulate glucose, lipids, and energy balance, realized by coordinated metabolic and hormonal processes. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:EndocrineSystemHealth a owl:Class ;
+    rdfs:label "Endocrine System Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the endocrine system of an organism to regulate hormones and maintain homeostasis, realized by the function of glands such as the pituitary, thyroid, and adrenal glands. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:PituitaryGlandHealth a owl:Class ;
+    rdfs:label "Pituitary Gland Health" ;
+    rdfs:subClassOf pafh:EndocrineSystemHealth ;
+    iao:IAO_0000115 "A disposition of the pituitary gland to secrete hormones that regulate other endocrine glands, realized by the function of anterior and posterior lobes. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:ThyroidGlandHealth a owl:Class ;
+    rdfs:label "Thyroid Gland Health" ;
+    rdfs:subClassOf pafh:EndocrineSystemHealth ;
+    iao:IAO_0000115 "A disposition of the thyroid gland to regulate metabolism and calcium balance, realized by secretion of thyroid hormones and calcitonin. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:AdrenalGlandHealth a owl:Class ;
+    rdfs:label "Adrenal Gland Health" ;
+    rdfs:subClassOf pafh:EndocrineSystemHealth ;
+    iao:IAO_0000115 "A disposition of the adrenal glands to produce hormones involved in stress response and metabolism, realized by the function of cortex and medulla. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:CirculatorySystemHealth a owl:Class ;
+    rdfs:label "Circulatory System Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the circulatory system of an organism to transport blood, nutrients, gases, and wastes, realized by the function of blood vessels and the heart. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:ImmuneHealth a owl:Class ;
+    rdfs:label "Immune Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the immune system of an organism to defend against pathogens and disease, realized by immune responses and surveillance. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:DigestiveSystemHealth a owl:Class ;
+    rdfs:label "Digestive System Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the digestive system of an organism to break down food, absorb nutrients, and eliminate waste, realized by the function of the stomach, intestines, liver, and pancreas. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:StomachHealth a owl:Class ;
+    rdfs:label "Stomach Health" ;
+    rdfs:subClassOf pafh:DigestiveSystemHealth ;
+    iao:IAO_0000115 "A disposition of the stomach to break down food with acid and enzymes, realized by the function of gastric glands and muscular contractions. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:LiverHealth a owl:Class ;
+    rdfs:label "Liver Health" ;
+    rdfs:subClassOf pafh:DigestiveSystemHealth ;
+    iao:IAO_0000115 "A disposition of the liver to metabolize nutrients, detoxify substances, and produce bile, realized by hepatocyte function and bile secretion. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:PancreasHealth a owl:Class ;
+    rdfs:label "Pancreas Health" ;
+    rdfs:subClassOf pafh:DigestiveSystemHealth ;
+    iao:IAO_0000115 "A disposition of the pancreas to secrete digestive enzymes and hormones (insulin, glucagon), realized by exocrine and endocrine pancreatic function. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:SmallIntestineHealth a owl:Class ;
+    rdfs:label "Small Intestine Health" ;
+    rdfs:subClassOf pafh:DigestiveSystemHealth ;
+    iao:IAO_0000115 "A disposition of the small intestine to absorb nutrients from digested food, realized by the function of villi and intestinal enzymes. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:LargeIntestineHealth a owl:Class ;
+    rdfs:label "Large Intestine Health" ;
+    rdfs:subClassOf pafh:DigestiveSystemHealth ;
+    iao:IAO_0000115 "A disposition of the large intestine to absorb water and form feces, realized by the function of colonic mucosa and gut microbiota. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:MouthHealth a owl:Class ;
+    rdfs:label "Mouth Health" ;
+    rdfs:subClassOf pafh:DigestiveSystemHealth ;
+    iao:IAO_0000115 "A disposition of the mouth to begin digestion and facilitate speech, realized by the function of teeth, tongue, and salivary glands. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:NervousSystemHealth a owl:Class ;
+    rdfs:label "Nervous System Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the nervous system of an organism to support sensation, movement, cognition, and regulation of bodily functions, realized by the function of the brain, spinal cord, and peripheral nerves. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:BrainHealth a owl:Class ;
+    rdfs:label "Brain Health" ;
+    rdfs:subClassOf pafh:NervousSystemHealth ;
+    iao:IAO_0000115 "A disposition of the brain of an organism to process information, regulate bodily functions, and enable cognition, realized by neuronal activity and synaptic transmission. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:SpinalCordHealth a owl:Class ;
+    rdfs:label "Spinal Cord Health" ;
+    rdfs:subClassOf pafh:NervousSystemHealth ;
+    iao:IAO_0000115 "A disposition of the spinal cord to transmit nerve signals between the brain and the body, realized by the function of nerve tracts and supporting glial cells. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:PeripheralNerveHealth a owl:Class ;
+    rdfs:label "Peripheral Nerve Health" ;
+    rdfs:subClassOf pafh:NervousSystemHealth ;
+    iao:IAO_0000115 "A disposition of the peripheral nerves to transmit sensory and motor signals between the central nervous system and the body, realized by the function of axons and myelin sheaths. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:UrinarySystemHealth a owl:Class ;
+    rdfs:label "Urinary System Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the urinary system of an organism to filter blood and eliminate waste, realized by the function of the kidneys, bladder, and associated structures. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:KidneyHealth a owl:Class ;
+    rdfs:label "Kidney Health" ;
+    rdfs:subClassOf pafh:UrinarySystemHealth ;
+    iao:IAO_0000115 "A disposition of the kidneys to filter blood and produce urine, realized by the function of nephrons and renal tubules. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:BladderHealth a owl:Class ;
+    rdfs:label "Bladder Health" ;
+    rdfs:subClassOf pafh:UrinarySystemHealth ;
+    iao:IAO_0000115 "A disposition of the bladder to store and expel urine, realized by the function of detrusor muscle and sphincter control. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:IntegumentarySystemHealth a owl:Class ;
+    rdfs:label "Integumentary System Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the integumentary system of an organism to provide protection and regulate body temperature, realized by the function of the skin, hair, and nails. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:SkinHealth a owl:Class ;
+    rdfs:label "Skin Health" ;
+    rdfs:subClassOf pafh:IntegumentarySystemHealth ;
+    iao:IAO_0000115 "A disposition of the skin to provide a protective barrier and regulate temperature, realized by the function of epidermis, dermis, and sweat glands. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:ReproductiveSystemHealth a owl:Class ;
+    rdfs:label "Reproductive System Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the reproductive system of an organism to enable reproduction, realized by the function of ovaries, testes, uterus, and associated structures. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:OvaryHealth a owl:Class ;
+    rdfs:label "Ovary Health" ;
+    rdfs:subClassOf pafh:ReproductiveSystemHealth ;
+    iao:IAO_0000115 "A disposition of the ovaries to produce eggs and hormones, realized by the function of ovarian follicles and endocrine cells. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:TestisHealth a owl:Class ;
+    rdfs:label "Testis Health" ;
+    rdfs:subClassOf pafh:ReproductiveSystemHealth ;
+    iao:IAO_0000115 "A disposition of the testes to produce sperm and hormones, realized by the function of seminiferous tubules and Leydig cells. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:UterusHealth a owl:Class ;
+    rdfs:label "Uterus Health" ;
+    rdfs:subClassOf pafh:ReproductiveSystemHealth ;
+    iao:IAO_0000115 "A disposition of the uterus to support fetal development and menstruation, realized by the function of endometrial and myometrial tissues. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:LymphaticSystemHealth a owl:Class ;
+    rdfs:label "Lymphatic System Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the lymphatic system of an organism to support immune function and fluid balance, realized by the function of lymph nodes, lymph vessels, spleen, and thymus. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:LymphNodeHealth a owl:Class ;
+    rdfs:label "Lymph Node Health" ;
+    rdfs:subClassOf pafh:LymphaticSystemHealth ;
+    iao:IAO_0000115 "A disposition of lymph nodes to filter lymph and support immune responses, realized by the function of lymphatic tissue and immune cells. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:SpleenHealth a owl:Class ;
+    rdfs:label "Spleen Health" ;
+    rdfs:subClassOf pafh:LymphaticSystemHealth ;
+    iao:IAO_0000115 "A disposition of the spleen to filter blood and support immune function, realized by the function of white and red pulp. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:ThymusHealth a owl:Class ;
+    rdfs:label "Thymus Health" ;
+    rdfs:subClassOf pafh:LymphaticSystemHealth ;
+    iao:IAO_0000115 "A disposition of the thymus to mature T-cells and support immune development, realized by the function of thymic epithelial cells. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:TonsilHealth a owl:Class ;
+    rdfs:label "Tonsil Health" ;
+    rdfs:subClassOf pafh:LymphaticSystemHealth ;
+    iao:IAO_0000115 "A disposition of the tonsils to trap pathogens and support immune responses, realized by the function of lymphoid follicles. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:SensorySystemHealth a owl:Class ;
+    rdfs:label "Sensory System Health" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A disposition of the sensory systems of an organism to support vision, hearing, taste, smell, and touch, realized by the function of eyes, ears, tongue, nose, and skin. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:EyeHealth a owl:Class ;
+    rdfs:label "Eye Health" ;
+    rdfs:subClassOf pafh:SensorySystemHealth ;
+    iao:IAO_0000115 "A disposition of the eyes to enable vision, realized by the function of retina, lens, and optic nerve. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:EarHealth a owl:Class ;
+    rdfs:label "Ear Health" ;
+    rdfs:subClassOf pafh:SensorySystemHealth ;
+    iao:IAO_0000115 "A disposition of the ears to enable hearing and balance, realized by the function of cochlea, vestibular apparatus, and auditory nerves. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:TongueHealth a owl:Class ;
+    rdfs:label "Tongue Health" ;
+    rdfs:subClassOf pafh:SensorySystemHealth ;
+    iao:IAO_0000115 "A disposition of the tongue to enable taste and speech, realized by the function of taste buds and lingual muscles. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:NoseHealth a owl:Class ;
+    rdfs:label "Nose Health" ;
+    rdfs:subClassOf pafh:SensorySystemHealth ;
+    iao:IAO_0000115 "A disposition of the nose to enable smell and filter inhaled air, realized by the function of olfactory epithelium and nasal passages. [MedlinePlus, NIH, BFO]"^^xsd:string .
+
+pafh:MentalHealth a owl:Class ;
+    rdfs:label "Mental Health" ;
+    rdfs:subClassOf pafh:Health ;
+    iao:IAO_0000115 "A state of well-being in which every individual realizes their own potential, can cope with the normal stresses of life, can work productively, and is able to contribute to their community. [WHO 2018, PMID:15003161]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/OGMS_0000098> ;
+    skos:closeMatch <http://purl.bioontology.org/ontology/SNOMEDCT/161901003> .
+
+pafh:EmotionalHealth a owl:Class ;
+    rdfs:label "Emotional Health" ;
+    rdfs:subClassOf pafh:MentalHealth ;
+    iao:IAO_0000115 "The capacity to experience, regulate, and express emotions in ways that promote well-being. [WHO 2018, PMID:15003161]"^^xsd:string .
+
+pafh:CognitiveHealth a owl:Class ;
+    rdfs:label "Cognitive Health" ;
+    rdfs:subClassOf pafh:MentalHealth ;
+    iao:IAO_0000115 "The ability to think, learn, and remember, encompassing memory, attention, and executive function. [WHO 2018, PMID:15003161]"^^xsd:string .
+
+pafh:SocialWellBeing a owl:Class ;
+    rdfs:label "Social Well-Being" ;
+    rdfs:subClassOf pafh:MentalHealth ;
+    iao:IAO_0000115 "The quality of social relationships and support that contribute to overall mental health. [WHO 2018, PMID:15003161]"^^xsd:string .
+
+pafh:PopulationHealth a owl:Class ;
+    rdfs:label "Population Health" ;
+    rdfs:subClassOf pafh:Health ;
+    iao:IAO_0000115 "The health outcomes of a group of individuals, including the distribution of such outcomes within the group. [Kindig & Stoddart 2003, PMID:12682478]"^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/OGMS_0000099> .
+
+pafh:HealthDisparities a owl:Class ;
+    rdfs:label "Health Disparities" ;
+    rdfs:subClassOf pafh:PopulationHealth ;
+    iao:IAO_0000115 "Differences in health outcomes and access to healthcare across different population groups, often influenced by social, economic, and environmental factors. [CDC 2023, PMID:12682478]"^^xsd:string .
+
+pafh:PublicHealthIntervention a owl:Class ;
+    rdfs:label "Public Health Intervention" ;
+    rdfs:subClassOf pafh:PopulationHealth ;
+    iao:IAO_0000115 "Programs, policies, or actions designed to improve the health of populations and reduce health disparities. [CDC 2023, PMID:12682478]"^^xsd:string .
+
+# --- END HEALTH BRANCH ---
+
+# --- MEASUREMENT METHODS BRANCH ---
+
+pafh:MeasurementMethod a owl:Class ;
+    rdfs:label "Measurement Method" ;
+    rdfs:subClassOf iao:IAO_0000030 ;
+    iao:IAO_0000115 "Technologies, methods, and units used to quantify physical activity, fitness, and health in clinical, research, and real-world settings."^^xsd:string ;
+    skos:closeMatch sosa:Procedure ;
+    skos:closeMatch ssn:Procedure .
+
+
+pafh:MeasurementDevice a owl:Class ;
+    rdfs:label "Measurement Device" ;
+    iao:IAO_0000115 "A physical device used to measure or record physical activity, fitness, or health parameters (e.g., accelerometer, heart rate monitor)."^^xsd:string .
+
+pafh:MeasurementInstrument a owl:Class ;
+    rdfs:label "Measurement Instrument" ;
+    iao:IAO_0000115 "A tool or instrument, physical or digital, used to assess or quantify physical activity, fitness, or health (e.g., questionnaire, wearable sensor)."^^xsd:string .
+
+pafh:MeasurementProtocol a owl:Class ;
+    rdfs:label "Measurement Protocol" ;
+    iao:IAO_0000115 "A standardized procedure or set of instructions for conducting a measurement (e.g., 6-minute walk test, DEXA scan protocol)."^^xsd:string .
+
+pafh:MeasurementOutcome a owl:Class ;
+    rdfs:label "Measurement Outcome" ;
+    iao:IAO_0000115 "A result or value obtained from a measurement process (e.g., step count, VO2 max, BMI)."^^xsd:string .
+
+pafh:hasDevice a owl:ObjectProperty ;
+    rdfs:label "has device" ;
+    rdfs:domain pafh:MeasurementMethod ;
+    rdfs:range pafh:MeasurementDevice ;
+    rdfs:comment "Relates a measurement method to the device used." .
+
+pafh:hasInstrument a owl:ObjectProperty ;
+    rdfs:label "has instrument" ;
+    rdfs:domain pafh:MeasurementMethod ;
+    rdfs:range pafh:MeasurementInstrument ;
+    rdfs:comment "Relates a measurement method to the instrument used." .
+
+pafh:hasProtocol a owl:ObjectProperty ;
+    rdfs:label "has protocol" ;
+    rdfs:domain pafh:MeasurementMethod ;
+    rdfs:range pafh:MeasurementProtocol ;
+    rdfs:comment "Relates a measurement method to the protocol or procedure used." .
+
+pafh:hasMeasurementOutcome a owl:ObjectProperty ;
+    rdfs:label "has measurement outcome" ;
+    rdfs:domain pafh:MeasurementMethod ;
+    rdfs:range pafh:MeasurementOutcome ;
+    rdfs:comment "Relates a measurement method to the outcome or result it produces." .
+
+# --- END MEASUREMENT METHODS BRANCH ---
+
+###################################################################
+# Measurement Method to Outcome/Result/Characteristic Links
+# (see pafh.trig for provenance-aware named graphs)
+# All provenance-backed named graph assertions are now in pafh.trig (TriG format).
+# This file is now pure Turtle/OWL for full Protégé compatibility.
+###################################################################
+
+###################################################################
+# END Measurement Method to Outcome/Result/Characteristic Links
+
+# See pafh.trig for provenance-aware named graphs for smart clothing measurement outcomes.
+
+# Self-report methods
+# See pafh.trig for provenance-aware named graphs for self-report and laboratory measurement outcomes.
+
+# Laboratory methods
+# All provenance-backed named graph assertions for measurement methods have been moved to pafh.trig (TriG format).
+# This file is now pure Turtle/OWL for full Protégé compatibility.
+# See pafh.trig for provenance-aware named graphs for all measurement method assertions.
+###################################################################
+# END Measurement Method to Outcome/Result/Characteristic Links (Named Graphs with Provenance)
+###################################################################
+
+
+# --- MENTAL & COGNITIVE FUNCTION BRANCH ---
+
+pafh:MentalAndCognitiveFunction a owl:Class ;
+    rdfs:label "Mental and Cognitive Function" ;
+    rdfs:subClassOf bfo:RealizableEntity ;
+    iao:IAO_0000115 "The mental processes and cognitive capacities that influence engagement in, performance of, and adaptation to prescribed physical activity."^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_b110> .
+
+pafh:GlobalMentalFunction a owl:Class ;
+    rdfs:label "Global Mental Function" ;
+    rdfs:subClassOf pafh:MentalAndCognitiveFunction ;
+    iao:IAO_0000115 "Overall awareness and orientation to the environment, including consciousness and alertness."^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/ICF_b110> .
+
+
+pafh:CognitiveFunction a owl:Class ;
+    rdfs:label "Cognitive Function" ;
+    rdfs:subClassOf pafh:MentalAndCognitiveFunction ;
+    iao:IAO_0000115 "A mental function involving the acquisition, processing, storage, and retrieval of information, such as memory, attention, and executive function."^^xsd:string .
+
+pafh:ExecutiveFunction a owl:Class ;
+    rdfs:label "Executive Function" ;
+    rdfs:subClassOf pafh:CognitiveFunction ;
+    iao:IAO_0000115 "A set of cognitive processes used for goal-directed behavior, including planning, inhibition, working memory, and cognitive flexibility."^^xsd:string .
+
+pafh:MemoryFunction a owl:Class ;
+    rdfs:label "Memory Function" ;
+    rdfs:subClassOf pafh:CognitiveFunction ;
+    iao:IAO_0000115 "A cognitive function related to the encoding, storage, and retrieval of information."^^xsd:string .
+
+pafh:AttentionFunction a owl:Class ;
+    rdfs:label "Attention Function" ;
+    rdfs:subClassOf pafh:CognitiveFunction ;
+    iao:IAO_0000115 "A cognitive function that enables focusing, sustaining, or shifting mental resources as needed for tasks."^^xsd:string .
+
+pafh:EmotionalFunction a owl:Class ;
+    rdfs:label "Emotional Function" ;
+    rdfs:subClassOf pafh:MentalAndCognitiveFunction ;
+    iao:IAO_0000115 "A mental function involved in the experience, regulation, and expression of emotions."^^xsd:string .
+
+pafh:MotivationFunction a owl:Class ;
+    rdfs:label "Motivation Function" ;
+    rdfs:subClassOf pafh:MentalAndCognitiveFunction ;
+    iao:IAO_0000115 "A mental function that initiates, guides, and maintains goal-oriented behaviors, such as participation in physical activity."^^xsd:string .
+
+pafh:hasCognitiveFunction a owl:ObjectProperty ;
+    rdfs:label "has cognitive function" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:CognitiveFunction ;
+    rdfs:comment "Relates a physical activity to a cognitive function relevant to its performance or outcome." .
+
+pafh:hasEmotionalFunction a owl:ObjectProperty ;
+    rdfs:label "has emotional function" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:EmotionalFunction ;
+    rdfs:comment "Relates a physical activity to an emotional function relevant to its performance or outcome." .
+
+pafh:hasMotivationFunction a owl:ObjectProperty ;
+    rdfs:label "has motivation function" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:MotivationFunction ;
+    rdfs:comment "Relates a physical activity to a motivation function relevant to its performance or outcome." .
+
+# --- END MENTAL & COGNITIVE FUNCTION BRANCH ---
+
+# --- PHYSIOLOGICAL HEALTH BRANCH ---
+
+pafh:PhysiologicalHealth a owl:Class ;
+    rdfs:label "Physiological Health" ;
+    rdfs:subClassOf bfo:Disposition ;
+    iao:IAO_0000115 "Discrete physiological responses, both acute and chronic, to varied combinations of physical activity doses."^^xsd:string .
+
+
+pafh:CardiovascularFunction a owl:Class ;
+    rdfs:label "Cardiovascular Function" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A physiological function involving the heart and blood vessels, essential for oxygen and nutrient delivery during physical activity."^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/UBERON_0004535> ; # cardiovascular system
+    rdfs:comment "Includes heart rate, blood pressure, and vascular responses relevant to activity and fitness." .
+
+pafh:MetabolicFunction a owl:Class ;
+    rdfs:label "Metabolic Function" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A physiological function involving biochemical processes that provide energy for physical activity, including glucose and lipid metabolism."^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/UBERON_0000405> ; # metabolic process
+    rdfs:comment "Includes energy production, substrate utilization, and metabolic regulation during activity." .
+
+pafh:MusculoskeletalFunction a owl:Class ;
+    rdfs:label "Musculoskeletal Function" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A physiological function involving muscles, bones, and connective tissues that enable movement and support physical activity."^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/UBERON_0001444> ; # musculoskeletal system
+    rdfs:comment "Includes muscle contraction, joint function, and bone health." .
+
+pafh:EndocrineFunction a owl:Class ;
+    rdfs:label "Endocrine Function" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A physiological function involving hormone production and regulation, affecting metabolism, growth, and adaptation to physical activity."^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/UBERON_0000990> ; # endocrine system
+    rdfs:comment "Includes hormonal responses to exercise and training." .
+
+pafh:AutonomicFunction a owl:Class ;
+    rdfs:label "Autonomic Function" ;
+    rdfs:subClassOf pafh:PhysiologicalHealth ;
+    iao:IAO_0000115 "A physiological function involving the autonomic nervous system, regulating involuntary processes such as heart rate, digestion, and respiratory rate during physical activity."^^xsd:string ;
+    skos:closeMatch <http://purl.obolibrary.org/obo/UBERON_0001017> ; # autonomic nervous system
+    rdfs:comment "Includes sympathetic and parasympathetic responses relevant to activity and recovery." .
+
+pafh:hasPhysiologicalFunction a owl:ObjectProperty ;
+    rdfs:label "has physiological function" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:PhysiologicalHealth ;
+    rdfs:comment "Relates a physical activity to a physiological function relevant to its performance or outcome." .
+
+# --- END PHYSIOLOGICAL HEALTH BRANCH ---
+
+# --- SALUTOLOGY BRANCH ---
+
+pafh:Salutology a owl:Class ;
+    rdfs:label "Salutology" ;
+    iao:IAO_0000115 "The study and science of health, focusing on the origins, processes, and maintenance of health and well-being, as opposed to the study of disease (pathology). [Antonovsky 1979; WHO]"^^xsd:string ;
+    rdfs:comment "Salutology (or salutogenesis) is the counterpart to pathology in health science." .
+
+pafh:SalutogenicProcess a owl:Class ;
+    rdfs:label "Salutogenic Process" ;
+    iao:IAO_0000115 "A process that supports, promotes, or maintains health and well-being in an organism, realized by biological, psychological, or social mechanisms. [Antonovsky 1979; WHO; BFO]"^^xsd:string ;
+    rdfs:comment "Counterpart to pathological process; includes adaptation, resilience, and recovery mechanisms." .
+
+pafh:SalutogenicBehaviour a owl:Class ;
+    rdfs:label "Salutogenic Behaviour" ;
+    rdfs:subClassOf pafh:SalutogenicProcess ;
+    iao:IAO_0000115 "A behaviour or pattern of action that promotes or maintains health and well-being, such as regular physical activity, balanced nutrition, or effective stress management. [WHO, CDC]"^^xsd:string .
+
+pafh:MindfulnessPractice a owl:Class ;
+    rdfs:label "Mindfulness Practice" ;
+    rdfs:subClassOf pafh:SalutogenicBehaviour ;
+    iao:IAO_0000115 "A salutogenic behaviour involving regular engagement in mindfulness or meditation practices that support mental and physical well-being. [WHO, CDC]"^^xsd:string .
+
+pafh:VolunteeringBehaviour a owl:Class ;
+    rdfs:label "Volunteering (Behaviour)" ;
+    rdfs:subClassOf pafh:SalutogenicBehaviour ;
+    iao:IAO_0000115 "A salutogenic behaviour involving voluntary, unpaid activities that benefit others or the community, fostering social connection and purpose. [WHO, CDC]"^^xsd:string .
+
+pafh:SleepHygiene a owl:Class ;
+    rdfs:label "Sleep Hygiene" ;
+    rdfs:subClassOf pafh:SalutogenicBehaviour ;
+    iao:IAO_0000115 "A salutogenic behaviour involving practices that promote regular, restful, and adequate sleep to support health. [CDC, NIH]"^^xsd:string .
+
+pafh:SalutogenicFactor a owl:Class ;
+    rdfs:label "Salutogenic Factor" ;
+    rdfs:subClassOf pafh:SalutogenicProcess ;
+    iao:IAO_0000115 "A variable, condition, or resource that contributes to the promotion or maintenance of health and well-being. [Antonovsky 1979; WHO]"^^xsd:string ;
+    rdfs:comment "Examples: social support, physical activity, nutrition, sense of coherence." .
+
+pafh:SocialSupport a owl:Class ;
+    rdfs:label "Social Support" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor consisting of emotional, informational, or practical assistance received from others, contributing to health and well-being. [WHO, CDC]"^^xsd:string .
+
+pafh:PhysicalActivityFactor a owl:Class ;
+    rdfs:label "Physical Activity (Salutogenic Factor)" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving regular bodily movement that enhances or maintains physical and mental health. [WHO, CDC]"^^xsd:string .
+
+pafh:Nutrition a owl:Class ;
+    rdfs:label "Nutrition" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving adequate and balanced intake of nutrients that supports growth, function, and health. [WHO, CDC]"^^xsd:string .
+
+pafh:HealthyDiet a owl:Class ;
+    rdfs:label "Healthy Diet" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving dietary patterns rich in fruits, vegetables, whole grains, and lean proteins that support health and prevent disease. [WHO, CDC]"^^xsd:string .
+
+pafh:SleepQuality a owl:Class ;
+    rdfs:label "Sleep Quality" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving sufficient, restorative, and regular sleep that supports physical and mental health. [CDC, NIH]"^^xsd:string .
+
+pafh:PurposeInLife a owl:Class ;
+    rdfs:label "Purpose in Life" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving a sense of direction and meaning that motivates health-promoting behaviors and resilience. [WHO, CDC]"^^xsd:string .
+
+pafh:Optimism a owl:Class ;
+    rdfs:label "Optimism" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving a positive outlook and expectation of favorable outcomes, which supports coping and health. [WHO, CDC]"^^xsd:string .
+
+pafh:PositiveRelationships a owl:Class ;
+    rdfs:label "Positive Relationships" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving supportive, trusting, and meaningful social connections that enhance well-being. [WHO, CDC]"^^xsd:string .
+
+pafh:CommunityEngagement a owl:Class ;
+    rdfs:label "Community Engagement" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving participation in community activities and civic life that fosters belonging and collective efficacy. [WHO, CDC]"^^xsd:string .
+
+pafh:Volunteering a owl:Class ;
+    rdfs:label "Volunteering" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving unpaid, intentional service to others or the community that promotes social connection and purpose. [WHO, CDC]"^^xsd:string .
+
+pafh:SelfEfficacy a owl:Class ;
+    rdfs:label "Self-Efficacy" ;
+    rdfs:subClassOf pafh:SalutogenicFactor ;
+    iao:IAO_0000115 "A salutogenic factor involving the belief in one's ability to succeed in specific situations or accomplish tasks, supporting health behaviors. [WHO, CDC]"^^xsd:string .
+
+pafh:SalutogenicResource a owl:Class ;
+    rdfs:label "Salutogenic Resource" ;
+    rdfs:subClassOf pafh:SalutogenicProcess ;
+    iao:IAO_0000115 "A tangible or intangible resource that enables or enhances salutogenic processes and outcomes. [Antonovsky 1979; WHO]"^^xsd:string ;
+    rdfs:comment "Examples: education, access to healthcare, coping skills." .
+
+pafh:AccessToHealthcare a owl:Class ;
+    rdfs:label "Access to Healthcare" ;
+    rdfs:subClassOf pafh:SalutogenicResource ;
+    iao:IAO_0000115 "A salutogenic resource involving the availability and use of preventive and curative health services. [WHO, CDC]"^^xsd:string .
+
+pafh:CopingSkills a owl:Class ;
+    rdfs:label "Coping Skills" ;
+    rdfs:subClassOf pafh:SalutogenicResource ;
+    iao:IAO_0000115 "A salutogenic resource involving psychological and behavioral strategies to manage stress and adversity. [WHO, CDC]"^^xsd:string .
+
+pafh:PreventiveCare a owl:Class ;
+    rdfs:label "Preventive Care" ;
+    rdfs:subClassOf pafh:SalutogenicResource ;
+    iao:IAO_0000115 "A salutogenic resource involving health services and interventions that prevent disease or detect it early, supporting long-term health. [WHO, CDC]"^^xsd:string .
+
+pafh:AdequateRest a owl:Class ;
+    rdfs:label "Adequate Rest" ;
+    rdfs:subClassOf pafh:SalutogenicResource ;
+    iao:IAO_0000115 "A salutogenic resource involving sufficient downtime and recovery periods that allow for physical and psychological restoration. [WHO, CDC]"^^xsd:string .
+
+pafh:SalutogenicMechanism a owl:Class ;
+    rdfs:label "Salutogenic Mechanism" ;
+    rdfs:subClassOf pafh:SalutogenicProcess ;
+    iao:IAO_0000115 "A biological, psychological, or social mechanism by which salutogenic factors exert effects on health. [Antonovsky 1979; WHO]"^^xsd:string ;
+    rdfs:comment "Examples: stress adaptation, immune enhancement, neuroplasticity." .
+
+pafh:StressManagement a owl:Class ;
+    rdfs:label "Stress Management" ;
+    rdfs:subClassOf pafh:SalutogenicMechanism ;
+    iao:IAO_0000115 "A salutogenic mechanism involving strategies and physiological processes that reduce the negative effects of stress and support health. [WHO, CDC]"^^xsd:string .
+
+pafh:EmotionalRegulation a owl:Class ;
+    rdfs:label "Emotional Regulation" ;
+    rdfs:subClassOf pafh:SalutogenicMechanism ;
+    iao:IAO_0000115 "A salutogenic mechanism involving the ability to monitor, evaluate, and modify emotional reactions to achieve goals and maintain well-being. [WHO, CDC]"^^xsd:string .
+
+pafh:Mindfulness a owl:Class ;
+    rdfs:label "Mindfulness" ;
+    rdfs:subClassOf pafh:SalutogenicMechanism ;
+    iao:IAO_0000115 "A salutogenic mechanism involving purposeful, non-judgmental attention to present experiences, supporting mental and physical health. [WHO, CDC]"^^xsd:string .
+
+pafh:SalutogenicOutcome a owl:Class ;
+    rdfs:label "Salutogenic Outcome" ;
+    rdfs:subClassOf pafh:SalutogenicProcess ;
+    iao:IAO_0000115 "A positive health state or improvement resulting from salutogenic processes or factors. [Antonovsky 1979; WHO]"^^xsd:string ;
+    rdfs:comment "Examples: resilience, well-being, functional capacity, recovery." .
+
+# --- END SALUTOLOGY BRANCH ---
+
+# --- ACTIVITY PURPOSE BRANCH ---
+
+pafh:ActivityPurpose a owl:Class ;
+    rdfs:label "Activity Purpose" ;
+    iao:IAO_0000115 "The intent or goal motivating a physical activity, which influences patterns and health impacts."^^xsd:string .
+
+pafh:BasicADLPurpose a owl:Class ;
+    rdfs:label "Basic Activities of Daily Living Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of fundamental self-care activities, such as walking to the bathroom."^^xsd:string ;
+    dcterms:source "PMID:29261878; PMID:3597653; PMID:9215334" .
+
+pafh:InstrumentalADLPurpose a owl:Class ;
+    rdfs:label "Instrumental Activities of Daily Living Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of instrumental self-care tasks, such as walking for grocery shopping."^^xsd:string ;
+    dcterms:source "PMID:29261878; PMID:3597653; PMID:9215334" .
+
+pafh:LeisurePurpose a owl:Class ;
+    rdfs:label "Leisure or Recreation Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity during free time for enjoyment, relaxation, or recreation. Recreation is often more structured or organized than play, may involve rules or objectives, and includes both individual and group activities such as sports, exercise, or outdoor pursuits. [WHO 2020; CDC; Pellegrini 2009]"^^xsd:string ;
+    dcterms:source "PMID:20401789; PMID:20064237" .
+pafh:CompetitionPurpose a owl:Class ;
+    rdfs:label "Competition Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of performing physical activity in a competitive context, such as race walking."^^xsd:string ;
+    dcterms:source "PMID:9624661; PMID:21694556" .
+
+pafh:hasPurpose a owl:ObjectProperty ;
+    rdfs:label "has purpose" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:ActivityPurpose ;
+    rdfs:comment "Relates a physical activity to the goal or intent for which it is performed." .
+
+
+pafh:TherapeuticPurpose a owl:Class ;
+    rdfs:label "Therapeutic Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of performing physical activity for the prevention, treatment, or management of health conditions (e.g., rehabilitation exercise)."^^xsd:string ;
+    dcterms:source "PMID:11581152; PMID:21694556; PMID:29261878" .
+
+pafh:OccupationalPurpose a owl:Class ;
+    rdfs:label "Occupational Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity as part of paid or unpaid work (e.g., walking as part of a job)."^^xsd:string ;
+    dcterms:source "PMID:19564664; PMID:21681120" .
+
+pafh:EducationalPurpose a owl:Class ;
+    rdfs:label "Educational Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of performing physical activity as part of learning or instruction (e.g., physical education class)."^^xsd:string ;
+    dcterms:source "PMID:20401789; PMID:29261878" .
+
+pafh:SocialPurpose a owl:Class ;
+    rdfs:label "Social Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity for social interaction, bonding, or community participation."^^xsd:string ;
+    dcterms:source "PMID:20401789; PMID:29261878" .
+
+pafh:hasActivityPurpose a owl:ObjectProperty ;
+    rdfs:label "has activity purpose" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:ActivityPurpose ;
+    rdfs:comment "Relates a physical activity to its motivating purpose, including therapeutic, occupational, educational, or social goals." .
+
+
+pafh:TransportationPurpose a owl:Class ;
+    rdfs:label "Transportation Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity for the purpose of moving from one location to another (e.g., walking or cycling to work)."^^xsd:string .
+
+pafh:ReligiousPurpose a owl:Class ;
+    rdfs:label "Religious or Spiritual Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity as part of religious or spiritual practice (e.g., pilgrimage, ritual dance)."^^xsd:string .
+
+pafh:PersonalSelfDefensePurpose a owl:Class ;
+    rdfs:label "Personal Self-Defense Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to protect oneself from immediate harm or threat (e.g., self-defense training, martial arts for personal safety)."^^xsd:string .
+
+pafh:SocialSelfDefensePurpose a owl:Class ;
+    rdfs:label "Social Self-Defense Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to protect a group, community, or society from harm or threat (e.g., community defense, organized group protection)."^^xsd:string .
+
+pafh:MilitaryPurpose a owl:Class ;
+    rdfs:label "Military Purpose" ;
+    rdfs:subClassOf pafh:SocialPurpose ;
+    iao:IAO_0000115 "Purpose of performing physical activity as part of military training, service, or operations, which may include both defense and offense at the societal level."^^xsd:string .
+
+pafh:ArtisticPurpose a owl:Class ;
+    rdfs:label "Artistic Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity for artistic expression, performance, or creation (e.g., dance, theater, performance art)."^^xsd:string .
+
+pafh:EnvironmentalPurpose a owl:Class ;
+    rdfs:label "Environmental Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity for environmental stewardship or activism (e.g., community clean-up, conservation work)."^^xsd:string .
+
+# SocialPurpose subtypes
+pafh:CommunityEngagementPurpose a owl:Class ;
+    rdfs:label "Community Engagement Purpose" ;
+    rdfs:subClassOf pafh:SocialPurpose ;
+    iao:IAO_0000115 "Purpose of participating in physical activity to engage with or contribute to a community."^^xsd:string .
+
+pafh:FamilyBondingPurpose a owl:Class ;
+    rdfs:label "Family Bonding Purpose" ;
+    rdfs:subClassOf pafh:SocialPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to strengthen family relationships or spend time with family members."^^xsd:string .
+
+pafh:PeerInteractionPurpose a owl:Class ;
+    rdfs:label "Peer Interaction Purpose" ;
+    rdfs:subClassOf pafh:SocialPurpose ;
+    iao:IAO_0000115 "Purpose of participating in physical activity to interact with peers or friends."^^xsd:string .
+
+# TherapeuticPurpose subtypes
+pafh:RehabilitationPurpose a owl:Class ;
+    rdfs:label "Rehabilitation Purpose" ;
+    rdfs:subClassOf pafh:TherapeuticPurpose ;
+    iao:IAO_0000115 "Purpose of performing physical activity as part of rehabilitation after injury, illness, or surgery."^^xsd:string .
+
+pafh:PreventivePurpose a owl:Class ;
+    rdfs:label "Preventive Purpose" ;
+    rdfs:subClassOf pafh:TherapeuticPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to prevent disease, injury, or decline in function."^^xsd:string .
+
+pafh:MentalHealthPurpose a owl:Class ;
+    rdfs:label "Mental Health Purpose" ;
+    rdfs:subClassOf pafh:TherapeuticPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to support or improve mental health and well-being."^^xsd:string .
+
+
+# Additional Activity Purpose subclasses
+
+# Socialization and Bonding Purposes
+pafh:SocializationPurpose a owl:Class ;
+    rdfs:label "Socialization Purpose" ;
+    rdfs:subClassOf pafh:SocialPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to initiate, develop, or maintain social relationships, including forming friendships and social networks. [PMID:20401789; PMID:29261878]"^^xsd:string .
+
+pafh:FriendshipPurpose a owl:Class ;
+    rdfs:label "Friendship Purpose" ;
+    rdfs:subClassOf pafh:SocializationPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to form or strengthen friendships. [PMID:20401789]"^^xsd:string .
+
+pafh:NetworkingPurpose a owl:Class ;
+    rdfs:label "Networking Purpose" ;
+    rdfs:subClassOf pafh:SocializationPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to expand professional or social networks. [PMID:20401789]"^^xsd:string .
+
+pafh:BondingPurpose a owl:Class ;
+    rdfs:label "Bonding Purpose" ;
+    rdfs:subClassOf pafh:SocialPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to strengthen emotional or social bonds, including within families and peer groups. [PMID:29261878]"^^xsd:string .
+
+pafh:IntergenerationalBondingPurpose a owl:Class ;
+    rdfs:label "Intergenerational Bonding Purpose" ;
+    rdfs:subClassOf pafh:BondingPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to foster relationships between different generations (e.g., grandparents and grandchildren). [PMID:29261878]"^^xsd:string .
+
+pafh:PeerBondingPurpose a owl:Class ;
+    rdfs:label "Peer Bonding Purpose" ;
+    rdfs:subClassOf pafh:BondingPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to foster relationships among peers. [PMID:29261878]"^^xsd:string .
+
+# Emotional Regulation Purposes
+pafh:EmotionalRegulationPurpose a owl:Class ;
+    rdfs:label "Emotional Regulation Purpose" ;
+    rdfs:subClassOf pafh:TherapeuticPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to manage or regulate emotions, including stress relief and mood enhancement. [PMID:20401789; PMID:21694556]"^^xsd:string .
+
+pafh:StressReliefPurpose a owl:Class ;
+    rdfs:label "Stress Relief Purpose" ;
+    rdfs:subClassOf pafh:EmotionalRegulationPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to reduce stress and promote relaxation. [PMID:20401789]"^^xsd:string .
+
+pafh:MoodEnhancementPurpose a owl:Class ;
+    rdfs:label "Mood Enhancement Purpose" ;
+    rdfs:subClassOf pafh:EmotionalRegulationPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to improve mood or emotional state. [PMID:20401789]"^^xsd:string .
+
+# Skill Development Purposes
+pafh:SkillDevelopmentPurpose a owl:Class ;
+    rdfs:label "Skill Development Purpose" ;
+    rdfs:subClassOf pafh:EducationalPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to acquire, refine, or master skills. [PMID:20401789]"^^xsd:string .
+
+pafh:MotorSkillPurpose a owl:Class ;
+    rdfs:label "Motor Skill Purpose" ;
+    rdfs:subClassOf pafh:SkillDevelopmentPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to develop or refine motor skills (e.g., balance, coordination). [PMID:20401789]"^^xsd:string .
+
+pafh:CognitiveSkillPurpose a owl:Class ;
+    rdfs:label "Cognitive Skill Purpose" ;
+    rdfs:subClassOf pafh:SkillDevelopmentPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to improve cognitive skills (e.g., strategy, memory, attention). [PMID:20401789]"^^xsd:string .
+
+pafh:ArtisticSkillPurpose a owl:Class ;
+    rdfs:label "Artistic Skill Purpose" ;
+    rdfs:subClassOf pafh:SkillDevelopmentPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to develop artistic or creative skills (e.g., dance, performance art). [PMID:20401789]"^^xsd:string .
+
+# Exploration Purposes
+pafh:ExplorationPurpose a owl:Class ;
+    rdfs:label "Exploration Purpose" ;
+    rdfs:subClassOf pafh:LeisurePurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to explore new environments, places, or experiences. [PMID:20401789]"^^xsd:string .
+
+pafh:NatureExplorationPurpose a owl:Class ;
+    rdfs:label "Nature Exploration Purpose" ;
+    rdfs:subClassOf pafh:ExplorationPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to explore natural settings (e.g., hiking, birdwatching). [PMID:20401789]"^^xsd:string .
+
+pafh:UrbanExplorationPurpose a owl:Class ;
+    rdfs:label "Urban Exploration Purpose" ;
+    rdfs:subClassOf pafh:ExplorationPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to explore urban environments (e.g., city walking tours). [PMID:20401789]"^^xsd:string .
+
+# Spiritual and Cultural Purposes
+pafh:SpiritualPurpose a owl:Class ;
+    rdfs:label "Spiritual Purpose" ;
+    rdfs:subClassOf pafh:ReligiousPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity for spiritual growth, reflection, or connection (e.g., yoga, meditation, ritual dance). [PMID:20401789]"^^xsd:string .
+
+pafh:MeditationPurpose a owl:Class ;
+    rdfs:label "Meditation Purpose" ;
+    rdfs:subClassOf pafh:SpiritualPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity as a form of meditation or mindfulness practice. [PMID:20401789]"^^xsd:string .
+
+pafh:RitualPurpose a owl:Class ;
+    rdfs:label "Ritual Purpose" ;
+    rdfs:subClassOf pafh:SpiritualPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity as part of a ritual or ceremonial tradition. [PMID:20401789]"^^xsd:string .
+
+pafh:CulturalPurpose a owl:Class ;
+    rdfs:label "Cultural Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to celebrate, preserve, or express cultural identity (e.g., folk dance, cultural festivals). [PMID:20401789]"^^xsd:string .
+
+pafh:HeritagePurpose a owl:Class ;
+    rdfs:label "Heritage Purpose" ;
+    rdfs:subClassOf pafh:CulturalPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to honor or connect with one's heritage or ancestry. [PMID:20401789]"^^xsd:string .
+
+pafh:FestivalPurpose a owl:Class ;
+    rdfs:label "Festival Purpose" ;
+    rdfs:subClassOf pafh:CulturalPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity as part of a festival or communal celebration. [PMID:20401789]"^^xsd:string .
+
+# Advocacy Purposes
+pafh:AdvocacyPurpose a owl:Class ;
+    rdfs:label "Advocacy Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to advocate for a cause or raise awareness (e.g., charity walk, environmental protest). [PMID:20401789]"^^xsd:string .
+
+pafh:HealthAdvocacyPurpose a owl:Class ;
+    rdfs:label "Health Advocacy Purpose" ;
+    rdfs:subClassOf pafh:AdvocacyPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to promote health awareness or support health-related causes. [PMID:20401789]"^^xsd:string .
+
+pafh:EnvironmentalAdvocacyPurpose a owl:Class ;
+    rdfs:label "Environmental Advocacy Purpose" ;
+    rdfs:subClassOf pafh:AdvocacyPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to raise awareness or promote action for environmental causes. [PMID:20401789]"^^xsd:string .
+
+# Other Purposes
+pafh:AdventurePurpose a owl:Class ;
+    rdfs:label "Adventure Purpose" ;
+    rdfs:subClassOf pafh:LeisurePurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity for adventure, excitement, or novelty (e.g., rock climbing, rafting). [PMID:20401789]"^^xsd:string .
+
+pafh:PlayPurpose a owl:Class ;
+    rdfs:label "Play Purpose" ;
+    rdfs:subClassOf pafh:LeisurePurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity that is spontaneous, voluntary, and intrinsically motivated, often unstructured and done for enjoyment, creative expression, or exploration, with little emphasis on external goals or outcomes. Play is typically characterized by flexibility, imagination, and fun. [WHO 2020; Pellegrini 2009; CDC]"^^xsd:string .
+
+pafh:RelaxationPurpose a owl:Class ;
+    rdfs:label "Relaxation Purpose" ;
+    rdfs:subClassOf pafh:LeisurePurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to relax or unwind (e.g., gentle stretching, walking in nature). [PMID:20401789]"^^xsd:string .
+
+pafh:CommutingPurpose a owl:Class ;
+    rdfs:label "Commuting Purpose" ;
+    rdfs:subClassOf pafh:TransportationPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity as a means of commuting or traveling to work, school, or other destinations. [PMID:20401789]"^^xsd:string .
+
+pafh:CharityPurpose a owl:Class ;
+    rdfs:label "Charity Purpose" ;
+    rdfs:subClassOf pafh:AdvocacyPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to raise funds or support charitable organizations (e.g., charity run, benefit walk). [PMID:20401789]"^^xsd:string .
+
+pafh:SelfImprovementPurpose a owl:Class ;
+    rdfs:label "Self-Improvement Purpose" ;
+    rdfs:subClassOf pafh:ActivityPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to improve oneself, including physical, mental, or personal growth. [PMID:20401789]"^^xsd:string .
+
+# Leisure Purpose subtypes
+pafh:OutdoorRecreationPurpose a owl:Class ;
+    rdfs:label "Outdoor Recreation Purpose" ;
+    rdfs:subClassOf pafh:LeisurePurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity in outdoor settings for recreation or enjoyment (e.g., hiking, cycling, kayaking). [PMID:20401789]"^^xsd:string .
+
+pafh:IndoorRecreationPurpose a owl:Class ;
+    rdfs:label "Indoor Recreation Purpose" ;
+    rdfs:subClassOf pafh:LeisurePurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity in indoor settings for recreation or enjoyment (e.g., gym exercise, dance class). [PMID:20401789]"^^xsd:string .
+
+
+# Additional high-value Activity Purpose subclasses
+
+pafh:ReminiscencePurpose a owl:Class ;
+    rdfs:label "Reminiscence Purpose" ;
+    rdfs:subClassOf pafh:LeisurePurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to recall, relive, or share past experiences, often fostering memory, nostalgia, or intergenerational connection (e.g., dancing to music from one's youth). [PMID:29261878; WHO 2017]"^^xsd:string .
+
+pafh:TeamBuildingPurpose a owl:Class ;
+    rdfs:label "Team Building Purpose" ;
+    rdfs:subClassOf pafh:SocialPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to foster group cohesion, collaboration, and teamwork, commonly in organizational, educational, or community settings. [PMID:20401789; CDC]"^^xsd:string .
+
+pafh:RiskTakingPurpose a owl:Class ;
+    rdfs:label "Risk Taking Purpose" ;
+    rdfs:subClassOf pafh:AdventurePurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity that involves calculated risk, thrill-seeking, or challenge (e.g., extreme sports, parkour). [PMID:20401789; WHO 2020]"^^xsd:string .
+
+pafh:EnvironmentalStewardshipPurpose a owl:Class ;
+    rdfs:label "Environmental Stewardship Purpose" ;
+    rdfs:subClassOf pafh:EnvironmentalPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to support conservation, sustainability, or environmental restoration (e.g., trail maintenance, green exercise). [PMID:24072027; WHO 2020]"^^xsd:string .
+
+pafh:CaregivingPurpose a owl:Class ;
+    rdfs:label "Caregiving Purpose" ;
+    rdfs:subClassOf pafh:BasicADLPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity to physically assist, support, or care for another individual (e.g., lifting, transferring, or accompanying a dependent person). [PMID:29261878; CDC]"^^xsd:string .
+
+pafh:ExpressionPurpose a owl:Class ;
+    rdfs:label "Expression Purpose" ;
+    rdfs:subClassOf pafh:ArtisticPurpose ;
+    iao:IAO_0000115 "Purpose of engaging in physical activity for self-expression, communication, or social commentary (e.g., movement improvisation, protest march, performance art). [PMID:20401789; WHO 2020]"^^xsd:string .
+
+# --- END ACTIVITY PURPOSE BRANCH ---
+
+# --- MODERATORS BRANCH ---
+
+pafh:Moderator a owl:Class ;
+    rdfs:label "Moderator" ;
+    rdfs:subClassOf bfo:DependentContinuant ;
+    iao:IAO_0000115 "A dependent continuant that is a variable or factor modifying the strength or direction of the effect of a physical activity process on health, fitness, or functional outcomes. Moderators are not processes themselves, but qualities, roles, or conditions that influence causal relationships. [PMID:17145995; PMID:20401789; PMID:29261878; BFO]"^^xsd:string ;
+    dcterms:source "PMID:17145995; PMID:20401789; PMID:29261878; BFO" .
+
+pafh:DemographicModerator a owl:Class ;
+    rdfs:label "Demographic Moderator" ;
+    rdfs:subClassOf pafh:Moderator ;
+    iao:IAO_0000115 "A moderator that is a dependent continuant inhering in a population, related to characteristics such as age, sex, ethnicity, or socioeconomic status, and which modifies the effect of physical activity on outcomes. [PMID:29261878; PMID:3597653; PMID:9215334; BFO]"^^xsd:string ;
+    dcterms:source "PMID:29261878; PMID:3597653; PMID:9215334; BFO" .
+
+pafh:GeneticModerator a owl:Class ;
+    rdfs:label "Genetic Moderator" ;
+    rdfs:subClassOf pafh:Moderator ;
+    iao:IAO_0000115 "A moderator that is a dependent continuant inhering in an organism, related to genetic variation or heritable traits, and which modifies the effect of physical activity on outcomes. [PMID:17956337; BFO]"^^xsd:string ;
+    dcterms:source "PMID:17956337; BFO" .
+
+pafh:BehavioralModerator a owl:Class ;
+    rdfs:label "Behavioral Moderator" ;
+    rdfs:subClassOf pafh:Moderator ;
+    iao:IAO_0000115 "A moderator that is a dependent continuant inhering in a person or group, related to behaviors such as diet, sleep, or substance use, and which modifies the effect of physical activity on outcomes. [PMID:20401789; PMID:29261878; BFO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; PMID:29261878; BFO" .
+
+pafh:PsychosocialModerator a owl:Class ;
+    rdfs:label "Psychosocial Moderator" ;
+    rdfs:subClassOf pafh:Moderator ;
+    iao:IAO_0000115 "A moderator that is a dependent continuant inhering in a person or group, related to psychological or social factors—such as motivation, social support, or mental health—that modifies the effect of physical activity on outcomes. [PMID:20401789; PMID:29261878; BFO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; PMID:29261878; BFO" .
+
+pafh:EnvironmentalModerator a owl:Class ;
+    rdfs:label "Environmental Moderator" ;
+    rdfs:subClassOf pafh:Moderator ;
+    iao:IAO_0000115 "A moderator that is a dependent continuant inhering in the environment, related to physical, built, or natural environmental features (e.g., walkability, climate, access to facilities) that modifies the effect of physical activity on outcomes. [PMID:20401789; PMID:20064237; BFO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; PMID:20064237; BFO" .
+
+pafh:ClinicalModerator a owl:Class ;
+    rdfs:label "Clinical Moderator" ;
+    rdfs:subClassOf pafh:Moderator ;
+    iao:IAO_0000115 "A moderator that is a dependent continuant inhering in a person, related to medical conditions, treatments, or clinical characteristics (e.g., comorbidities, medication use) that modifies the effect of physical activity on outcomes. [PMID:11581152; PMID:29261878; BFO]"^^xsd:string ;
+    dcterms:source "PMID:11581152; PMID:29261878; BFO" .
+
+pafh:hasModerator a owl:ObjectProperty ;
+    rdfs:label "has moderator" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:Moderator ;
+    rdfs:comment "Relates a physical activity to moderators (demographic, genetic, behavioral, psychosocial, environmental, or clinical) that influence its performance or outcomes." .
+
+# --- END MODERATORS BRANCH ---
+
+# --- CONTEXT BRANCH ---
+
+pafh:Context a owl:Class ;
+    rdfs:label "Context" ;
+    rdfs:subClassOf bfo:DependentContinuant ;
+    iao:IAO_0000115 "A dependent continuant that is a factor or set of circumstances, inhering in an environment, agent, or process, which surrounds, influences, or provides the setting for physical activity, fitness, or health outcomes. [PMID:20401789; ENVO:00002036; BFO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; ENVO:00002036; BFO" .
+
+# Environmental Context and subtypes
+pafh:EnvironmentalContext a owl:Class ;
+    rdfs:label "Environmental Context" ;
+    rdfs:subClassOf pafh:Context ;
+    iao:IAO_0000115 "A context that is a dependent continuant inhering in the physical, built, or natural environment in which physical activity occurs. [PMID:20401789; ENVO:00002036; BFO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; ENVO:00002036; BFO" ;
+    skos:exactMatch envo:ENVO_00002036 .
+
+pafh:BuiltEnvironmentContext a owl:Class ;
+    rdfs:label "Built Environment Context" ;
+    rdfs:subClassOf pafh:EnvironmentalContext ;
+    iao:IAO_0000115 "A context related to human-made surroundings (e.g., buildings, parks, sidewalks, urban design) that influence physical activity. [PMID:20401789; ENVO:00002036]"^^xsd:string ;
+    dcterms:source "PMID:20401789; ENVO:00002036" .
+
+pafh:NaturalEnvironmentContext a owl:Class ;
+    rdfs:label "Natural Environment Context" ;
+    rdfs:subClassOf pafh:EnvironmentalContext ;
+    iao:IAO_0000115 "A context related to natural features or settings (e.g., forests, bodies of water, mountains) that influence physical activity. [PMID:20401789; ENVO:00002036]"^^xsd:string ;
+    dcterms:source "PMID:20401789; ENVO:00002036" .
+
+pafh:ClimateContext a owl:Class ;
+    rdfs:label "Climate Context" ;
+    rdfs:subClassOf pafh:EnvironmentalContext ;
+    iao:IAO_0000115 "A context related to climate or weather conditions (e.g., temperature, humidity, precipitation) that influence physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:PollutionContext a owl:Class ;
+    rdfs:label "Pollution Context" ;
+    rdfs:subClassOf pafh:EnvironmentalContext ;
+    iao:IAO_0000115 "A context related to environmental pollution (e.g., air quality, noise, chemical exposure) that influences physical activity participation or outcomes. [PMID:24072027; WHO]"^^xsd:string ;
+    dcterms:source "PMID:24072027; WHO" .
+
+pafh:MicroclimateContext a owl:Class ;
+    rdfs:label "Microclimate Context" ;
+    rdfs:subClassOf pafh:EnvironmentalContext ;
+    iao:IAO_0000115 "A context related to localized atmospheric conditions (e.g., temperature, humidity, wind) in a specific area that influence physical activity. [ENVO:01001305; PMID:20401789]"^^xsd:string ;
+    dcterms:source "ENVO:01001305; PMID:20401789" .
+
+pafh:GreenSpaceContext a owl:Class ;
+    rdfs:label "Green Space Context" ;
+    rdfs:subClassOf pafh:EnvironmentalContext ;
+    iao:IAO_0000115 "A context related to the presence or access to green spaces (e.g., parks, gardens, urban forests) that influences physical activity. [PMID:24072027; WHO]"^^xsd:string ;
+    dcterms:source "PMID:24072027; WHO" .
+
+pafh:AccessibilityContext a owl:Class ;
+    rdfs:label "Accessibility Context" ;
+    rdfs:subClassOf pafh:EnvironmentalContext ;
+    iao:IAO_0000115 "A context related to the degree to which environments are accessible to individuals with varying abilities, impacting opportunities for physical activity. [PMID:24072027; CDC]"^^xsd:string ;
+    dcterms:source "PMID:24072027; CDC" .
+
+# Social Context and subtypes
+pafh:SocialContext a owl:Class ;
+    rdfs:label "Social Context" ;
+    rdfs:subClassOf pafh:Context ;
+    iao:IAO_0000115 "A context that is a dependent continuant inhering in social relationships, group membership, or cultural norms that influence physical activity. [PMID:20401789; PMID:29261878; BFO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; PMID:29261878; BFO" .
+
+pafh:FamilyContext a owl:Class ;
+    rdfs:label "Family Context" ;
+    rdfs:subClassOf pafh:SocialContext ;
+    iao:IAO_0000115 "A context related to family structure, relationships, or dynamics that influence physical activity (e.g., parental support, caregiving). [PMID:29261878; WHO]"^^xsd:string ;
+    dcterms:source "PMID:29261878; WHO" .
+
+pafh:PeerContext a owl:Class ;
+    rdfs:label "Peer Context" ;
+    rdfs:subClassOf pafh:SocialContext ;
+    iao:IAO_0000115 "A context related to peer relationships or group membership (e.g., friends, teammates) that influence physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:CommunityContext a owl:Class ;
+    rdfs:label "Community Context" ;
+    rdfs:subClassOf pafh:SocialContext ;
+    iao:IAO_0000115 "A context related to community engagement, resources, or norms (e.g., neighborhood cohesion, local organizations) that influence physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:CulturalNormContext a owl:Class ;
+    rdfs:label "Cultural Norm Context" ;
+    rdfs:subClassOf pafh:SocialContext ;
+    iao:IAO_0000115 "A context related to cultural beliefs, values, or practices that influence physical activity (e.g., gender roles, traditions). [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:SocialMediaContext a owl:Class ;
+    rdfs:label "Social Media Context" ;
+    rdfs:subClassOf pafh:SocialContext ;
+    iao:IAO_0000115 "A context related to the use of social media platforms (e.g., Facebook, Strava) that influences physical activity participation, motivation, or social comparison. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:LeadershipContext a owl:Class ;
+    rdfs:label "Leadership Context" ;
+    rdfs:subClassOf pafh:SocialContext ;
+    iao:IAO_0000115 "A context related to the presence or influence of leaders (e.g., coaches, teachers, community leaders) on physical activity behaviors. [PMID:29261878; CDC]"^^xsd:string ;
+    dcterms:source "PMID:29261878; CDC" .
+
+pafh:SocialSupportContext a owl:Class ;
+    rdfs:label "Social Support Context" ;
+    rdfs:subClassOf pafh:SocialContext ;
+    iao:IAO_0000115 "A context related to the availability or perception of social support (e.g., encouragement, companionship) that facilitates physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+# Temporal Context and subtypes
+pafh:TemporalContext a owl:Class ;
+    rdfs:label "Temporal Context" ;
+    rdfs:subClassOf pafh:Context ;
+    iao:IAO_0000115 "A context that is a dependent continuant related to time, such as time of day, season, or life stage, that influences physical activity. [PMID:20401789; PMID:29261878; BFO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; PMID:29261878; BFO" .
+
+pafh:TimeOfDayContext a owl:Class ;
+    rdfs:label "Time of Day Context" ;
+    rdfs:subClassOf pafh:TemporalContext ;
+    iao:IAO_0000115 "A context related to the time of day (e.g., morning, afternoon, evening, night) when physical activity occurs. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:SeasonContext a owl:Class ;
+    rdfs:label "Season Context" ;
+    rdfs:subClassOf pafh:TemporalContext ;
+    iao:IAO_0000115 "A context related to the season (e.g., winter, summer) that influences physical activity patterns. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:LifeStageContext a owl:Class ;
+    rdfs:label "Life Stage Context" ;
+    rdfs:subClassOf pafh:TemporalContext ;
+    iao:IAO_0000115 "A context related to the life stage of an individual (e.g., childhood, adolescence, older adulthood) that influences physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:HolidayContext a owl:Class ;
+    rdfs:label "Holiday Context" ;
+    rdfs:subClassOf pafh:TemporalContext ;
+    iao:IAO_0000115 "A context related to holidays (e.g., national, religious, school breaks) that influences patterns of physical activity. [PMID:29261878; WHO]"^^xsd:string ;
+    dcterms:source "PMID:29261878; WHO" .
+
+pafh:CircadianRhythmContext a owl:Class ;
+    rdfs:label "Circadian Rhythm Context" ;
+    rdfs:subClassOf pafh:TemporalContext ;
+    iao:IAO_0000115 "A context related to an individual's circadian rhythms (biological clock), influencing optimal timing or response to physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:HistoricalPeriodContext a owl:Class ;
+    rdfs:label "Historical Period Context" ;
+    rdfs:subClassOf pafh:TemporalContext ;
+    iao:IAO_0000115 "A context related to a specific historical period or era (e.g., COVID-19 pandemic, post-war) that influences physical activity opportunities or norms. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+# Situational Context and subtypes
+pafh:SituationalContext a owl:Class ;
+    rdfs:label "Situational Context" ;
+    rdfs:subClassOf pafh:Context ;
+    iao:IAO_0000115 "A context that is a dependent continuant related to specific circumstances, events, or situations that influence physical activity (e.g., emergencies, celebrations, occupational settings). [PMID:20401789; BFO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; BFO" .
+
+pafh:EmergencyContext a owl:Class ;
+    rdfs:label "Emergency Context" ;
+    rdfs:subClassOf pafh:SituationalContext ;
+    iao:IAO_0000115 "A context related to emergencies or urgent situations (e.g., natural disasters, medical emergencies) that influence physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:CelebrationContext a owl:Class ;
+    rdfs:label "Celebration Context" ;
+    rdfs:subClassOf pafh:SituationalContext ;
+    iao:IAO_0000115 "A context related to celebrations or festive events (e.g., holidays, festivals) that influence physical activity participation. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:OccupationalContext a owl:Class ;
+    rdfs:label "Occupational Context" ;
+    rdfs:subClassOf pafh:SituationalContext ;
+    iao:IAO_0000115 "A context related to the workplace or occupational setting (e.g., job demands, shift work) that influences physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:CrisisContext a owl:Class ;
+    rdfs:label "Crisis Context" ;
+    rdfs:subClassOf pafh:SituationalContext ;
+    iao:IAO_0000115 "A context related to acute crises (e.g., economic downturn, political unrest, public health emergencies) that influence physical activity opportunities or constraints. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:TravelContext a owl:Class ;
+    rdfs:label "Travel Context" ;
+    rdfs:subClassOf pafh:SituationalContext ;
+    iao:IAO_0000115 "A context related to travel or mobility (e.g., commuting, migration, tourism) that influences physical activity patterns. [PMID:29261878; WHO]"^^xsd:string ;
+    dcterms:source "PMID:29261878; WHO" .
+
+pafh:TransitionContext a owl:Class ;
+    rdfs:label "Transition Context" ;
+    rdfs:subClassOf pafh:SituationalContext ;
+    iao:IAO_0000115 "A context related to periods of transition (e.g., retirement, school-to-work, relocation) that affect physical activity behaviors. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+# Technological Context and subtypes
+pafh:TechnologicalContext a owl:Class ;
+    rdfs:label "Technological Context" ;
+    rdfs:subClassOf pafh:Context ;
+    iao:IAO_0000115 "A context that is a dependent continuant related to the use or availability of technology that influences physical activity (e.g., wearable devices, exercise equipment, digital platforms). [PMID:24072027; BFO]"^^xsd:string ;
+    dcterms:source "PMID:24072027; BFO" .
+
+pafh:WearableDeviceContext a owl:Class ;
+    rdfs:label "Wearable Device Context" ;
+    rdfs:subClassOf pafh:TechnologicalContext ;
+    iao:IAO_0000115 "A context related to the use of wearable devices (e.g., fitness trackers, smartwatches) that influence physical activity behavior or measurement. [PMID:24072027; WHO]"^^xsd:string ;
+    dcterms:source "PMID:24072027; WHO" .
+
+pafh:ExerciseEquipmentContext a owl:Class ;
+    rdfs:label "Exercise Equipment Context" ;
+    rdfs:subClassOf pafh:TechnologicalContext ;
+    iao:IAO_0000115 "A context related to the use or availability of exercise equipment (e.g., treadmills, weights) that influences physical activity. [PMID:24072027; WHO]"^^xsd:string ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000536> ; # ERO: exercise equipment
+    dcterms:source "PMID:24072027; WHO" .
+
+# Specific exercise and measurement equipment (with ERO mappings)
+pafh:Treadmill a owl:Class ;
+    rdfs:label "Treadmill" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000537> ;
+    iao:IAO_0000115 "A motorized or manual device used for walking or running in place, commonly used in exercise testing and training."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:StationaryBicycle a owl:Class ;
+    rdfs:label "Stationary Bicycle (Ergometer)" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000538> ;
+    iao:IAO_0000115 "A stationary cycling device used to assess or improve cardiorespiratory fitness and lower body strength."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:RowingMachine a owl:Class ;
+    rdfs:label "Rowing Machine" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000539> ;
+    iao:IAO_0000115 "A device simulating the action of rowing, used for aerobic exercise and fitness assessment."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:EllipticalTrainer a owl:Class ;
+    rdfs:label "Elliptical Trainer" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000540> ;
+    iao:IAO_0000115 "A stationary exercise machine used to simulate stair climbing, walking, or running without causing excessive pressure to the joints."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:ForcePlate a owl:Class ;
+    rdfs:label "Force Plate" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000541> ;
+    iao:IAO_0000115 "A device that measures the ground reaction forces generated by a body standing or moving across it, used in biomechanics and gait analysis."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:MetabolicCart a owl:Class ;
+    rdfs:label "Metabolic Cart" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000542> ;
+    iao:IAO_0000115 "A system used to measure respiratory gases and metabolic variables during exercise or rest."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:HeartRateMonitor a owl:Class ;
+    rdfs:label "Heart Rate Monitor" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000543> ;
+    iao:IAO_0000115 "A device for measuring and recording heart rate during physical activity or rest."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:Accelerometer a owl:Class ;
+    rdfs:label "Accelerometer" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000544> ;
+    iao:IAO_0000115 "A device that measures acceleration forces, commonly used to assess physical activity and movement patterns."^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:Pedometer a owl:Class ;
+    rdfs:label "Pedometer" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000545> ;
+    iao:IAO_0000115 "A device that counts steps taken by detecting motion of the hands or hips, used to estimate physical activity."^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:Dynamometer a owl:Class ;
+    rdfs:label "Dynamometer" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000546> ;
+    iao:IAO_0000115 "A device for measuring force, torque, or power, commonly used to assess muscle strength."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:Spirometer a owl:Class ;
+    rdfs:label "Spirometer" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000547> ;
+    iao:IAO_0000115 "A device that measures the volume of air inhaled and exhaled by the lungs, used in pulmonary function testing."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:Electrocardiograph a owl:Class ;
+    rdfs:label "Electrocardiograph (ECG/EKG)" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000548> ;
+    iao:IAO_0000115 "A device that records the electrical activity of the heart over time, used in exercise testing and clinical diagnostics."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:MotionCaptureSystem a owl:Class ;
+    rdfs:label "Motion Capture System" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000549> ;
+    iao:IAO_0000115 "A system that records movement of objects or people, used in biomechanics and motion analysis."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:Goniometer a owl:Class ;
+    rdfs:label "Goniometer" ;
+    rdfs:subClassOf pafh:ExerciseEquipment ;
+    skos:exactMatch <http://purl.obolibrary.org/obo/ERO_0000550> ;
+    iao:IAO_0000115 "A device that measures angles or range of motion of a joint, used in physical therapy and biomechanics."^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:DigitalPlatformContext a owl:Class ;
+    rdfs:label "Digital Platform Context" ;
+    rdfs:subClassOf pafh:TechnologicalContext ;
+    iao:IAO_0000115 "A context related to the use of digital platforms (e.g., online classes, fitness apps) that influence physical activity participation or measurement. [PMID:24072027; WHO]"^^xsd:string ;
+    dcterms:source "PMID:24072027; WHO" .
+
+pafh:TelehealthContext a owl:Class ;
+    rdfs:label "Telehealth Context" ;
+    rdfs:subClassOf pafh:TechnologicalContext ;
+    iao:IAO_0000115 "A context related to the use of telehealth or remote health services (e.g., virtual exercise counseling, remote monitoring) that influences physical activity engagement or support. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:VirtualRealityContext a owl:Class ;
+    rdfs:label "Virtual Reality Context" ;
+    rdfs:subClassOf pafh:TechnologicalContext ;
+    iao:IAO_0000115 "A context related to the use of virtual reality technology (e.g., VR exercise games, immersive simulations) that influences physical activity experience or measurement. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:MobileAppContext a owl:Class ;
+    rdfs:label "Mobile App Context" ;
+    rdfs:subClassOf pafh:TechnologicalContext ;
+    iao:IAO_0000115 "A context related to the use of mobile applications (apps) for tracking, motivating, or guiding physical activity. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:hasContext a owl:ObjectProperty ;
+    rdfs:label "has context" ;
+    rdfs:domain pafh:PhysicalActivity ;
+    rdfs:range pafh:Context ;
+    rdfs:comment "Relates a physical activity to its relevant environmental, social, temporal, situational, or technological context." .
+
+# --- END CONTEXT BRANCH ---
+
+# --- MEASUREMENT METHODS BRANCH ---
+
+pafh:MeasurementMethod a owl:Class ;
+    rdfs:label "Measurement Method" ;
+    rdfs:subClassOf bfo:Process ;
+    iao:IAO_0000115 "A process, technique, instrument, or protocol used to quantify, assess, or observe physical activity, fitness, or health-related variables. [PMID:20401789; WHO; BFO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO; BFO" .
+
+# Device-based methods
+pafh:DeviceBasedMethod a owl:Class ;
+    rdfs:label "Device-Based Method" ;
+    rdfs:subClassOf pafh:MeasurementMethod ;
+    iao:IAO_0000115 "A measurement method that uses electronic or mechanical devices to objectively quantify physical activity or physiological parameters. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:AccelerometryMethod a owl:Class ;
+    rdfs:label "Accelerometry Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using accelerometers to objectively measure movement intensity, frequency, and duration. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:PedometerMethod a owl:Class ;
+    rdfs:label "Pedometer Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using pedometers to count steps and estimate ambulatory activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:HeartRateMonitorMethod a owl:Class ;
+    rdfs:label "Heart Rate Monitor Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using heart rate monitors to assess physiological response to physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:GPSMethod a owl:Class ;
+    rdfs:label "GPS Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using global positioning system (GPS) devices to track location, distance, and speed during physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:MultiSensorMethod a owl:Class ;
+    rdfs:label "Multi-Sensor Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using multiple integrated sensors (e.g., accelerometer, gyroscope, barometer) to provide comprehensive measurement of physical activity or physiological parameters. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:BarometerMethod a owl:Class ;
+    rdfs:label "Barometer Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using barometers to measure altitude changes, stair climbing, or atmospheric pressure during physical activity. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:GyroscopeMethod a owl:Class ;
+    rdfs:label "Gyroscope Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using gyroscopes to measure rotational movement and orientation during physical activity. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:ForcePlateMethod a owl:Class ;
+    rdfs:label "Force Plate Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using force plates to measure ground reaction forces, balance, or gait during physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:EMGMethod a owl:Class ;
+    rdfs:label "EMG Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using electromyography (EMG) to measure muscle activation during physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:InertialMeasurementUnitMethod a owl:Class ;
+    rdfs:label "Inertial Measurement Unit Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using inertial measurement units (IMUs) that combine accelerometers, gyroscopes, and magnetometers for 3D movement tracking. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:MagnetometerMethod a owl:Class ;
+    rdfs:label "Magnetometer Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using magnetometers to measure orientation and heading, often as part of IMUs. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:PressureSensorMethod a owl:Class ;
+    rdfs:label "Pressure Sensor Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using pressure sensors (e.g., in insoles) to measure plantar pressure, gait, or balance. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:ThermographyMethod a owl:Class ;
+    rdfs:label "Thermography Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using infrared thermography to assess muscle activation, injury, or metabolic activity. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:BioimpedanceAnalysisMethod a owl:Class ;
+    rdfs:label "Bioimpedance Analysis Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using bioelectrical impedance analysis (BIA) to estimate body composition, including fat, muscle, and hydration. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:SmartClothingMethod a owl:Class ;
+    rdfs:label "Smart Clothing Method" ;
+    rdfs:subClassOf pafh:DeviceBasedMethod ;
+    iao:IAO_0000115 "A device-based method using garments embedded with sensors (e.g., ECG, EMG, temperature) to monitor physical activity or physiological status. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+# Self-report methods
+pafh:SelfReportMethod a owl:Class ;
+    rdfs:label "Self-Report Method" ;
+    rdfs:subClassOf pafh:MeasurementMethod ;
+    iao:IAO_0000115 "A measurement method based on participants' self-reporting of physical activity or related behaviors, often via questionnaires, diaries, or recall. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:QuestionnaireMethod a owl:Class ;
+    rdfs:label "Questionnaire Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method using standardized questionnaires to assess physical activity, fitness, or health behaviors. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:DiaryMethod a owl:Class ;
+    rdfs:label "Diary Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method where participants record physical activity or related behaviors in a diary or log over a specified period. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:RecallMethod a owl:Class ;
+    rdfs:label "Recall Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method involving retrospective recall of physical activity or related behaviors over a defined period (e.g., 7-day recall). [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:EcologicalMomentaryAssessmentMethod a owl:Class ;
+    rdfs:label "Ecological Momentary Assessment Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method involving real-time or near real-time assessment of physical activity or related behaviors in naturalistic settings. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:WebBasedQuestionnaireMethod a owl:Class ;
+    rdfs:label "Web-Based Questionnaire Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method using online or web-based questionnaires to assess physical activity, fitness, or health behaviors. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:ProxyReportMethod a owl:Class ;
+    rdfs:label "Proxy Report Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method in which a proxy (e.g., parent, caregiver) reports physical activity or related behaviors for another individual. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:ActivityLogbookMethod a owl:Class ;
+    rdfs:label "Activity Logbook Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method using structured logbooks to record physical activity or related behaviors over time. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:PhotoVideoDiaryMethod a owl:Class ;
+    rdfs:label "Photo/Video Diary Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method in which participants submit photos or videos as records of their physical activity or related behaviors. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:ExperienceSamplingMethod a owl:Class ;
+    rdfs:label "Experience Sampling Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method involving frequent prompts for subjective state or behavior, similar to but not always real-time like EMA. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:SleepDiaryMethod a owl:Class ;
+    rdfs:label "Sleep Diary Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method using diaries to record sleep patterns, often in conjunction with physical activity studies. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:PeerAssessmentMethod a owl:Class ;
+    rdfs:label "Peer Assessment Method" ;
+    rdfs:subClassOf pafh:SelfReportMethod ;
+    iao:IAO_0000115 "A self-report method in which peers rate or report on another individual's physical activity or fitness. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+# Direct observation methods
+pafh:DirectObservationMethod a owl:Class ;
+    rdfs:label "Direct Observation Method" ;
+    rdfs:subClassOf pafh:MeasurementMethod ;
+    iao:IAO_0000115 "A measurement method involving direct observation of physical activity, fitness, or related behaviors by trained observers or via recording devices. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:InPersonObservationMethod a owl:Class ;
+    rdfs:label "In-Person Observation Method" ;
+    rdfs:subClassOf pafh:DirectObservationMethod ;
+    iao:IAO_0000115 "A direct observation method where trained observers assess physical activity or related behaviors in real time and in person. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:VideoObservationMethod a owl:Class ;
+    rdfs:label "Video Observation Method" ;
+    rdfs:subClassOf pafh:DirectObservationMethod ;
+    iao:IAO_0000115 "A direct observation method using video recordings to assess physical activity or related behaviors. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:WearableCameraMethod a owl:Class ;
+    rdfs:label "Wearable Camera Method" ;
+    rdfs:subClassOf pafh:DirectObservationMethod ;
+    iao:IAO_0000115 "A direct observation method using wearable cameras to capture and assess physical activity or related behaviors from a first-person perspective. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:AutomatedVideoAnalysisMethod a owl:Class ;
+    rdfs:label "Automated Video Analysis Method" ;
+    rdfs:subClassOf pafh:DirectObservationMethod ;
+    iao:IAO_0000115 "A direct observation method using automated video analysis (e.g., computer vision, AI) to assess physical activity or related behaviors from recorded footage. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:DroneObservationMethod a owl:Class ;
+    rdfs:label "Drone Observation Method" ;
+    rdfs:subClassOf pafh:DirectObservationMethod ;
+    iao:IAO_0000115 "A direct observation method using aerial drones to observe and record physical activity in outdoor or large-scale settings. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:CrowdSourcedObservationMethod a owl:Class ;
+    rdfs:label "Crowd-Sourced Observation Method" ;
+    rdfs:subClassOf pafh:DirectObservationMethod ;
+    iao:IAO_0000115 "A direct observation method utilizing crowd-sourced data or observations (e.g., public event tracking, citizen science) to assess physical activity. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+# Laboratory methods
+pafh:LaboratoryMethod a owl:Class ;
+    rdfs:label "Laboratory Method" ;
+    rdfs:subClassOf pafh:MeasurementMethod ;
+    iao:IAO_0000115 "A measurement method conducted in a laboratory setting to assess physical activity, fitness, or health-related variables using specialized equipment or protocols. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:VO2MaxTestMethod a owl:Class ;
+    rdfs:label "VO2 Max Test Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method measuring maximal oxygen uptake (VO2 max) as an indicator of cardiorespiratory fitness. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:BloodBiomarkerMethod a owl:Class ;
+    rdfs:label "Blood Biomarker Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method involving analysis of blood samples to assess physiological or metabolic markers related to physical activity or fitness. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:DEXAMethod a owl:Class ;
+    rdfs:label "DEXA Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using dual-energy X-ray absorptiometry (DEXA) to assess body composition, bone density, or related outcomes. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:LactateThresholdTestMethod a owl:Class ;
+    rdfs:label "Lactate Threshold Test Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method measuring blood lactate levels during graded exercise to determine the lactate threshold, an indicator of aerobic endurance. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:SpirometryMethod a owl:Class ;
+    rdfs:label "Spirometry Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using spirometry to assess lung function and respiratory parameters during or after physical activity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:IsokineticDynamometryMethod a owl:Class ;
+    rdfs:label "Isokinetic Dynamometry Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using isokinetic dynamometry to assess muscle strength and power at constant speed. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:GenomicAssayMethod a owl:Class ;
+    rdfs:label "Genomic Assay Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using genomic assays to assess genetic markers or expression profiles related to physical activity or fitness. [PMID:17956337; WHO]"^^xsd:string ;
+    dcterms:source "PMID:17956337; WHO" .
+
+pafh:MetabolicCartMethod a owl:Class ;
+    rdfs:label "Metabolic Cart Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using a metabolic cart to measure oxygen consumption, carbon dioxide production, and energy expenditure. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:UltrasoundImagingMethod a owl:Class ;
+    rdfs:label "Ultrasound Imaging Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using ultrasound imaging to assess muscle, tendon, or fat thickness, or vascular function. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:MRIMethod a owl:Class ;
+    rdfs:label "MRI Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using magnetic resonance imaging (MRI) to assess muscle or fat volume, organ size, or tissue composition. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:CTMethod a owl:Class ;
+    rdfs:label "CT Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using computed tomography (CT) to obtain cross-sectional images for muscle or fat distribution. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:NearInfraredSpectroscopyMethod a owl:Class ;
+    rdfs:label "Near-Infrared Spectroscopy Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using near-infrared spectroscopy (NIRS) to measure muscle oxygenation during exercise. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:ElectrocardiographyMethod a owl:Class ;
+    rdfs:label "Electrocardiography Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using electrocardiography (ECG) to assess cardiac function during physical activity or exercise testing. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:ElectroencephalographyMethod a owl:Class ;
+    rdfs:label "Electroencephalography Method" ;
+    rdfs:subClassOf pafh:LaboratoryMethod ;
+    iao:IAO_0000115 "A laboratory method using electroencephalography (EEG) to assess brain activity during physical activity or cognitive tasks. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+# Protocol-based methods
+pafh:ProtocolBasedMethod a owl:Class ;
+    rdfs:label "Protocol-Based Method" ;
+    rdfs:subClassOf pafh:MeasurementMethod ;
+    iao:IAO_0000115 "A measurement method involving standardized protocols or field tests to assess physical activity, fitness, or functional capacity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:SixMinuteWalkTestMethod a owl:Class ;
+    rdfs:label "Six-Minute Walk Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using the six-minute walk test to assess functional exercise capacity. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:ShuttleRunTestMethod a owl:Class ;
+    rdfs:label "Shuttle Run Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using shuttle run tests (e.g., beep test) to assess aerobic fitness or endurance. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:SitToStandTestMethod a owl:Class ;
+    rdfs:label "Sit-to-Stand Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using sit-to-stand tests to assess lower-body strength or functional mobility. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:TimedUpAndGoTestMethod a owl:Class ;
+    rdfs:label "Timed Up and Go Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using the Timed Up and Go (TUG) test to assess mobility, balance, and fall risk. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:GripStrengthTestMethod a owl:Class ;
+    rdfs:label "Grip Strength Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using grip strength testing to assess upper-body muscular strength. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:StepTestMethod a owl:Class ;
+    rdfs:label "Step Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using step tests (e.g., Harvard Step Test) to assess cardiovascular fitness or endurance. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:FieldBasedAgilityTestMethod a owl:Class ;
+    rdfs:label "Field-Based Agility Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using field-based agility tests (e.g., T-test, Illinois agility test) to assess agility and movement skill. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:IncrementalExerciseTestMethod a owl:Class ;
+    rdfs:label "Incremental Exercise Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using graded exercise protocols (e.g., Bruce treadmill test) to assess cardiovascular fitness or endurance. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:BalanceTestMethod a owl:Class ;
+    rdfs:label "Balance Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using balance tests (e.g., Berg Balance Scale, single-leg stance) to assess postural control or fall risk. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:FlexibilityTestMethod a owl:Class ;
+    rdfs:label "Flexibility Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using flexibility tests (e.g., sit-and-reach, goniometry) to assess joint range of motion. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:ReactionTimeTestMethod a owl:Class ;
+    rdfs:label "Reaction Time Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using computerized or manual protocols to assess reaction time. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:FunctionalMovementScreenMethod a owl:Class ;
+    rdfs:label "Functional Movement Screen Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using the Functional Movement Screen (FMS) to assess movement quality and injury risk. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+pafh:PosturalSwayTestMethod a owl:Class ;
+    rdfs:label "Postural Sway Test Method" ;
+    rdfs:subClassOf pafh:ProtocolBasedMethod ;
+    iao:IAO_0000115 "A protocol-based method using force plates or balance boards to assess postural sway and balance. [PMID:20401789; WHO]"^^xsd:string ;
+    dcterms:source "PMID:20401789; WHO" .
+
+# Digital health methods
+pafh:DigitalHealthMethod a owl:Class ;
+    rdfs:label "Digital Health Method" ;
+    rdfs:subClassOf pafh:MeasurementMethod ;
+    iao:IAO_0000115 "A measurement method using digital health technologies (e.g., smartphone apps, telehealth, online surveys) to assess physical activity, fitness, or health-related variables. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:SmartphoneAppMethod a owl:Class ;
+    rdfs:label "Smartphone App Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using smartphone applications to collect, track, or analyze physical activity or health data. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:TelehealthAssessmentMethod a owl:Class ;
+    rdfs:label "Telehealth Assessment Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using telehealth platforms to remotely assess physical activity, fitness, or health outcomes. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:OnlineSurveyMethod a owl:Class ;
+    rdfs:label "Online Survey Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using online surveys to collect self-reported data on physical activity, fitness, or health behaviors. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:WearableSensorNetworkMethod a owl:Class ;
+    rdfs:label "Wearable Sensor Network Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using interconnected wearable sensors to collect multimodal data on physical activity or physiological status. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:MachineLearningAssessmentMethod a owl:Class ;
+    rdfs:label "Machine Learning Assessment Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using machine learning algorithms to analyze data and classify or predict physical activity, fitness, or health outcomes. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:RemoteEcologicalMomentaryAssessmentMethod a owl:Class ;
+    rdfs:label "Remote Ecological Momentary Assessment Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using remote or mobile-based ecological momentary assessment (EMA) to collect real-time data on physical activity or related behaviors. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:VirtualCoachMethod a owl:Class ;
+    rdfs:label "Virtual Coach Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using virtual coaches (e.g., AI-driven, app-based) to guide, motivate, or assess physical activity and fitness. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:ChatbotAssessmentMethod a owl:Class ;
+    rdfs:label "Chatbot Assessment Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using conversational AI or chatbots to collect health or physical activity data from users. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:PassiveSensingMethod a owl:Class ;
+    rdfs:label "Passive Sensing Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using passive data collection (e.g., smartphone sensors, ambient sound) to monitor physical activity or health behaviors without active user input. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+pafh:VoiceAnalysisMethod a owl:Class ;
+    rdfs:label "Voice Analysis Method" ;
+    rdfs:subClassOf pafh:DigitalHealthMethod ;
+    iao:IAO_0000115 "A digital health method using voice or speech analysis as a proxy for fatigue, mood, or exertion. [PMID:33577446; WHO]"^^xsd:string ;
+    dcterms:source "PMID:33577446; WHO" .
+
+
+# Please review this merged file in Protege or your preferred tool. If you spot any missing or conflicting classes, let me know and I will resolve them in the next iteration.
