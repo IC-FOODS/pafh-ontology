@@ -1,0 +1,212 @@
+version: '3.8'
+
+# ===========================================================================
+# KnowBrow — production docker-compose base
+#
+# - Production-safe defaults (immutable app containers, no docker socket mount)
+# - Local development behavior is layered via docker-compose.override.yml
+# ===========================================================================
+
+services:
+
+  # ---- Reverse proxy (only public-facing service) ----
+  caddy:
+    image: caddy:2.8.4-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      django:
+        condition: service_healthy
+      fastapi:
+        condition: service_healthy
+    networks:
+      - backend
+
+  # ---- Django (CMS + auth + write-back) ----
+  django:
+    build: ./backend/django
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-sparql_app.settings_production}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-sparql_db}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY is required}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-False}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      - DJANGO_CSRF_TRUSTED_ORIGINS=${DJANGO_CSRF_TRUSTED_ORIGINS:-https://localhost}
+      - DJANGO_CORS_ALLOWED_ORIGINS=${DJANGO_CORS_ALLOWED_ORIGINS:-https://localhost}
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY:?INTERNAL_API_KEY is required}
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID:-}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET:-}
+      - OAUTH_FRONTEND_REDIRECT_URL=${OAUTH_FRONTEND_REDIRECT_URL:-http://localhost:3002}
+      - OAUTH_FRONTEND_REDIRECT_ALLOWLIST=${OAUTH_FRONTEND_REDIRECT_ALLOWLIST:-http://localhost:3002}
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "/app/entrypoint.sh"]
+    volumes:
+      - django_media:/app/media
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/admin/')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - backend
+
+  # ---- FastAPI (data API + SPARQL) ----
+  fastapi:
+    build: ./backend/fastapi
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:-sparql_db}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-https://localhost}
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY:?INTERNAL_API_KEY is required}
+      - DJANGO_USER=${DJANGO_USER:?DJANGO_USER is required}
+      - DJANGO_PASSWORD=${DJANGO_PASSWORD:?DJANGO_PASSWORD is required}
+      - OXIGRAPH_SPARQL_URL=${OXIGRAPH_SPARQL_URL:-http://oxigraph:7878/query}
+      - ONTOP_RUNTIME_PROPERTIES_PATH=/ontop/runtime/active.properties
+      - ONTOP_MAPPING_FILE=/ontop/mappings/knowbrow_fixed.obda
+      - ONTOP_ONTOLOGY_FILE=/ontop/ontology/knowbrow.ttl
+      - ONTOP_AUTO_RESTART=false
+      - ONTOP_CONTAINER_NAME=knowbrow-ontop-1
+    depends_on:
+      db:
+        condition: service_healthy
+      oxigraph:
+        condition: service_started
+    volumes:
+      - ontop_runtime:/ontop/runtime
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - backend
+
+  # ---- PostgreSQL ----
+  db:
+    image: pgvector/pgvector:pg15
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-sparql_db}
+      - POSTGRES_USER=${POSTGRES_USER:-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    expose:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-sparql_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - backend
+
+  # ---- Oxigraph (SPARQL triple store) ----
+  oxigraph:
+    image: oxigraph/oxigraph:latest
+    restart: unless-stopped
+    expose:
+      - "7878"
+    volumes:
+      - oxigraph_data:/data
+    command: ["serve", "--location", "/data", "--bind", "0.0.0.0:7878"]
+    networks:
+      - backend
+
+  # ---- Oxigraph seed loader (one-shot, first deploy) ----
+  oxigraph-seed:
+    image: curlimages/curl:8.11.1
+    depends_on:
+      - oxigraph
+    restart: "no"
+    volumes:
+      - ./oxigraph/seed:/seed:ro
+      - ./oxigraph/ontology:/ontology:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Waiting for Oxigraph..."
+        until curl -sf -X POST http://oxigraph:7878/query \
+          -H "Content-Type: application/sparql-query" \
+          -d "ASK { ?s ?p ?o }" 2>/dev/null; do
+          sleep 1
+        done
+        echo "Oxigraph ready. Checking if data already loaded..."
+        COUNT=$$(curl -sf -X POST http://oxigraph:7878/query \
+          -H "Content-Type: application/sparql-query" \
+          -H "Accept: application/sparql-results+json" \
+          -d "SELECT (COUNT(*) AS ?n) WHERE { GRAPH ?g { ?s ?p ?o } }" | grep -o '"value":"[0-9]*"' | head -1 | grep -o '[0-9]*')
+        if [ "$${COUNT}" -gt 100 ] 2>/dev/null; then
+          echo "Data already loaded ($${COUNT} triples). Skipping."
+          exit 0
+        fi
+        echo "Loading ontology..."
+        curl -sf -X POST "http://oxigraph:7878/store?graph=http://knowbrow.org/ontology" \
+          -H "Content-Type: text/turtle" \
+          --data-binary @/ontology/knowbrow.ttl && echo " OK" || echo " FAILED"
+        for f in /seed/*.ttl; do
+          name=$$(basename "$$f" .ttl)
+          echo -n "Loading $$name..."
+          curl -sf -X POST "http://oxigraph:7878/store?graph=http://knowbrow.org/data/$$name" \
+            -H "Content-Type: text/turtle" \
+            --data-binary @"$$f" && echo " OK" || echo " FAILED"
+        done
+        echo "Seed loading complete."
+    networks:
+      - backend
+
+  # ---- Ontop (virtual SPARQL over Postgres) ----
+  ontop:
+    build:
+      context: ./ontop
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      - ONTOP_ENDPOINT=http://localhost:8080
+      - ONTOP_PROPERTIES_FILE=/ontop/runtime/active.properties
+      - ONTOP_MAPPING_FILE=/ontop/mappings/knowbrow_fixed.obda
+      - ONTOP_ONTOLOGY_FILE=/ontop/ontology/knowbrow.ttl
+    volumes:
+      - ./ontop/mappings:/ontop/mappings:ro
+      - ./ontop/ontology:/ontop/ontology:ro
+      - ontop_runtime:/ontop/runtime
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  oxigraph_data:
+  caddy_data:
+  caddy_config:
+  django_media:
+  ontop_runtime:

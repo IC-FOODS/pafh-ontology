@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowbrow.org/schemas/capabilities-response.schema.json",
+  "title": "Capabilities Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "authenticated",
+    "mode",
+    "user",
+    "features",
+    "sources"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "authenticated": {"type": "boolean"},
+    "mode": {
+      "type": "string",
+      "enum": ["demo", "integrated"]
+    },
+    "user": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["user_id", "username"],
+          "properties": {
+            "user_id": {"type": "integer"},
+            "username": {"type": "string"}
+          }
+        }
+      ]
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "can_view_public",
+        "can_view_private",
+        "can_save_graphs",
+        "can_share_graphs",
+        "can_write_back",
+        "can_manage_sources"
+      ],
+      "properties": {
+        "can_view_public": {"type": "boolean"},
+        "can_view_private": {"type": "boolean"},
+        "can_save_graphs": {"type": "boolean"},
+        "can_share_graphs": {"type": "boolean"},
+        "can_write_back": {"type": "boolean"},
+        "can_manage_sources": {"type": "boolean"}
+      }
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["public", "private", "accessible"],
+      "properties": {
+        "public": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "private": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "accessible": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}

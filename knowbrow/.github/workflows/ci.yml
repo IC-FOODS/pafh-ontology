@@ -1,0 +1,176 @@
+# ===========================================================================
+# KnowBrow CI — runs on every push and PR to main/dev branches
+#
+# Jobs:
+#   1. django-tests:  Django unit + integration tests (needs Postgres)
+#   2. fastapi-tests: FastAPI unit tests (pure mocks, no services)
+#   3. validate-infra: Compose config + Caddyfile syntax validation
+# ===========================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main, codespace-*]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ------------------------------------------------------------------
+  # Django tests (requires Postgres for TestCase-based tests)
+  # ------------------------------------------------------------------
+  django-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: sparql_db
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U user -d sparql_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://user:pass@localhost:5432/sparql_db
+      DJANGO_SETTINGS_MODULE: sparql_app.settings
+      DJANGO_SECRET_KEY: ci-test-key-not-for-production
+      DJANGO_DEBUG: "True"
+      INTERNAL_API_KEY: ci-test-internal-key
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/django/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        working-directory: backend/django
+
+      - name: Run migrations
+        run: python manage.py migrate --noinput
+        working-directory: backend/django
+
+      - name: Check production settings
+        run: python manage.py check --settings=sparql_app.settings_production
+        working-directory: backend/django
+        env:
+          DJANGO_SETTINGS_MODULE: sparql_app.settings_production
+          DJANGO_SECURE_SSL_REDIRECT: "False"
+
+      - name: Run tests
+        run: python manage.py test graphs.tests --verbosity=2
+        working-directory: backend/django
+
+  # ------------------------------------------------------------------
+  # FastAPI tests (no external services needed — all mocked)
+  # ------------------------------------------------------------------
+  fastapi-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      OXIGRAPH_SPARQL_URL: http://oxigraph:7878/query
+      INTERNAL_API_KEY: ci-test-internal-key
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/fastapi/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        working-directory: backend/fastapi
+
+      - name: Run dataset endpoint tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+        working-directory: backend/fastapi
+
+  # ------------------------------------------------------------------
+  # Infrastructure validation (compose + Caddy config)
+  # ------------------------------------------------------------------
+  validate-infra:
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_PASSWORD: ci-placeholder-postgres
+      DJANGO_SECRET_KEY: ci-placeholder-django-secret
+      INTERNAL_API_KEY: ci-placeholder-internal-key
+      DJANGO_USER: ci-service-user
+      DJANGO_PASSWORD: ci-service-password
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate docker-compose (production)
+        run: docker compose -f docker-compose.yml config --quiet
+
+      - name: Enforce production compose safety constraints
+        run: |
+          set -e
+
+          # No Docker daemon socket mount in production.
+          if grep -q '/var/run/docker.sock:/var/run/docker.sock' docker-compose.yml; then
+            echo "ERROR: docker-compose.yml must not mount /var/run/docker.sock"
+            exit 1
+          fi
+
+          # No source bind-mounts for app code in production.
+          if grep -q './backend/django:/app' docker-compose.yml; then
+            echo "ERROR: docker-compose.yml must not bind-mount Django app source"
+            exit 1
+          fi
+          if grep -q './backend/fastapi:/app' docker-compose.yml; then
+            echo "ERROR: docker-compose.yml must not bind-mount FastAPI app source"
+            exit 1
+          fi
+
+      - name: Validate docker-compose (dev override)
+        run: docker compose config --quiet
+
+      - name: Install Caddy
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq debian-keyring debian-archive-keyring apt-transport-https
+          curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+          curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq caddy
+
+      - name: Validate Caddyfile
+        run: caddy validate --config Caddyfile --adapter caddyfile
+        env:
+          DOMAIN: localhost
+
+      - name: Verify .env.example documents all compose vars
+        run: |
+          # Extract ${VAR:-...} and ${VAR:?...} references from compose, check they're in .env.example
+          MISSING=0
+          for var in $(grep -oE '\$\{[A-Z_]+:(-|\?)' docker-compose.yml | sed 's/\${//;s/:-//;s/:?//'); do
+            if ! grep -q "^${var}=" .env.example && ! grep -q "^# ${var}=" .env.example; then
+              echo "MISSING from .env.example: ${var}"
+              MISSING=$((MISSING + 1))
+            fi
+          done
+          if [ "$MISSING" -gt 0 ]; then
+            echo "ERROR: ${MISSING} env var(s) in docker-compose.yml not documented in .env.example"
+            exit 1
+          fi
+          echo "All compose env vars documented in .env.example"

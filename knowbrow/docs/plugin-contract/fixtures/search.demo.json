@@ -1,0 +1,20 @@
+[
+  {
+    "id": "Q42",
+    "label": "Douglas Adams",
+    "description": "English writer and humorist",
+    "author": "Wikidata",
+    "source": "wikidata",
+    "confidence": 0.97,
+    "relevance_score": 0.95
+  },
+  {
+    "id": "sample:GGB1",
+    "label": "Chickpea (Cooked)",
+    "description": "PTFI 2025 demo sample",
+    "author": "Food Omics Demo",
+    "source": "food_omics_demo",
+    "confidence": 0.91,
+    "relevance_score": 0.88
+  }
+]

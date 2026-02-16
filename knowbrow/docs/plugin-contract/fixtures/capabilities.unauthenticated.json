@@ -1,0 +1,19 @@
+{
+  "contract_version": "2026-02-16",
+  "authenticated": false,
+  "mode": "demo",
+  "user": null,
+  "features": {
+    "can_view_public": true,
+    "can_view_private": false,
+    "can_save_graphs": false,
+    "can_share_graphs": false,
+    "can_write_back": false,
+    "can_manage_sources": false
+  },
+  "sources": {
+    "public": ["wikidata"],
+    "private": [],
+    "accessible": ["wikidata"]
+  }
+}

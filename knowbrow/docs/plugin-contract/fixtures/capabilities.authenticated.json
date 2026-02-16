@@ -1,0 +1,22 @@
+{
+  "contract_version": "2026-02-16",
+  "authenticated": true,
+  "mode": "integrated",
+  "user": {
+    "user_id": 7,
+    "username": "alice"
+  },
+  "features": {
+    "can_view_public": true,
+    "can_view_private": true,
+    "can_save_graphs": true,
+    "can_share_graphs": true,
+    "can_write_back": true,
+    "can_manage_sources": true
+  },
+  "sources": {
+    "public": ["wikidata"],
+    "private": ["private_ontop"],
+    "accessible": ["private_ontop", "wikidata"]
+  }
+}

@@ -1,0 +1,73 @@
+# KnowBrow reverse proxy
+# Caddy auto-provisions TLS when DOMAIN is a real hostname.
+# For local dev (DOMAIN=localhost), Caddy uses a self-signed cert.
+#
+# Env vars (set in .env, interpolated by docker-compose):
+#   DOMAIN  — public hostname, e.g. knowbrow.example.com
+
+{$DOMAIN:localhost} {
+	# ---- Internal endpoints: block from public access ----
+	# Must come before /api* to take priority.
+	handle /internal* {
+		respond "Not Found" 404
+	}
+
+	# ---- Django (CMS + auth + write-back) ----
+	handle /admin* {
+		reverse_proxy django:8000
+	}
+	handle /cms* {
+		reverse_proxy django:8000
+	}
+	handle /api/auth* {
+		reverse_proxy django:8000
+	}
+	handle /api/token* {
+		reverse_proxy django:8000
+	}
+	# django-allauth OAuth flows (Google login/callback)
+	handle /accounts* {
+		reverse_proxy django:8000
+	}
+
+	# ---- FastAPI (data API + SPARQL) ----
+	handle /api* {
+		reverse_proxy fastapi:8000
+	}
+	handle /sparql* {
+		reverse_proxy fastapi:8000
+	}
+	handle /health {
+		reverse_proxy fastapi:8000
+	}
+	handle /docs* {
+		respond "Not Found" 404
+	}
+	handle /openapi.json {
+		respond "Not Found" 404
+	}
+
+	# ---- Oxigraph: NOT exposed publicly ----
+	# Access only via internal docker network (fastapi → oxigraph:7878)
+
+	# ---- Static / fallback ----
+	handle {
+		respond "KnowBrow API" 200
+	}
+
+	# ---- Security headers ----
+	header {
+		X-Content-Type-Options nosniff
+		# Allow iframe embedding by CMS sites (GraphMap, PhenoExplorer)
+		X-Frame-Options SAMEORIGIN
+		Content-Security-Policy "frame-ancestors 'self' https://*.github.io https://*.uknowgrow.org https://ic-foods.org https://*.ic-foods.org"
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	# ---- Logging ----
+	log {
+		output stdout
+		format json
+	}
+}

@@ -1,0 +1,17 @@
+{
+  "id": "food-omics-explorer",
+  "name": "Food Omics Explorer",
+  "version": "1.2.0",
+  "contractVersion": "2026-02-16",
+  "entry": {
+    "route": "/plugins/food-omics",
+    "component": "FoodOmicsApp"
+  },
+  "capabilities": {
+    "requiresAuth": false,
+    "supportsDemoMode": true,
+    "supportsSave": true,
+    "supportsShare": true,
+    "supportsWriteBack": false
+  }
+}

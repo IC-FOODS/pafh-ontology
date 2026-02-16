@@ -1,0 +1,85 @@
+openapi: 3.0.3
+info:
+  title: KnowBrow Plugin API Contract
+  version: "2026-02-16"
+  description: >-
+    Minimal, stable API surface for pluggable frontends.
+servers:
+  - url: https://api.example.org
+paths:
+  /api/capabilities:
+    get:
+      summary: Resolve plugin runtime mode and capabilities
+      description: >-
+        Returns demo vs integrated mode and feature/source flags.
+      parameters:
+        - in: header
+          name: Authorization
+          required: false
+          schema:
+            type: string
+            example: Bearer eyJhbGciOi...
+      responses:
+        "200":
+          description: Capability response
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/capabilities-response.schema.json
+  /api/search:
+    get:
+      summary: Search across allowed data sources
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+            minLength: 2
+        - in: query
+          name: sources
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./schemas/search-result.schema.json
+  /api/map-nodes/{node_id}:
+    get:
+      summary: Retrieve graph node details and relationships
+      parameters:
+        - in: path
+          name: node_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: sources
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: Node response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true

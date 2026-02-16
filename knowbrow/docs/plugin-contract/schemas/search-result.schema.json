@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowbrow.org/schemas/search-result.schema.json",
+  "title": "Search Result",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["id", "label"],
+  "properties": {
+    "id": {"type": "string"},
+    "label": {"type": "string"},
+    "description": {"type": ["string", "null"]},
+    "author": {"type": ["string", "null"]},
+    "source": {"type": ["string", "null"]},
+    "confidence": {"type": ["number", "null"]},
+    "relevance_score": {"type": ["number", "null"]}
+  }
+}
