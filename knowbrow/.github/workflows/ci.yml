@@ -20,6 +20,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  detect-plugin-contract-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      plugin_contract: ${{ steps.filter.outputs.plugin_contract }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            plugin_contract:
+              - 'backend/fastapi/**'
+              - 'docs/plugin-contract/**'
+              - 'docs/PLUGIN_CONTRACT.md'
+              - 'scripts/test_fastapi_contract.sh'
 
   # ------------------------------------------------------------------
   # Django tests (requires Postgres for TestCase-based tests)
@@ -103,6 +118,20 @@ jobs:
       - name: Run dataset endpoint tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
         working-directory: backend/fastapi
+
+  # ------------------------------------------------------------------
+  # FastAPI plugin contract test in Docker (only when relevant files change)
+  # ------------------------------------------------------------------
+  fastapi-plugin-contract:
+    runs-on: ubuntu-latest
+    needs: detect-plugin-contract-changes
+    if: needs.detect-plugin-contract-changes.outputs.plugin_contract == 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run plugin contract test (containerized)
+        run: ./scripts/test_fastapi_contract.sh
 
   # ------------------------------------------------------------------
   # Infrastructure validation (compose + Caddy config)
